@@ -3,8 +3,9 @@
  */
 import { db } from "@/server/db";
 import { demands, events, submissions } from "@/server/db/schema";
-import { and, desc, eq, inArray, lt, or, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, lt, or, isNull, isNotNull } from "drizzle-orm";
 import { CONFIG } from "@/server/core/config";
+import { proposeRouting } from "@/server/services/lifecycle/routing";
 
 function submissionToValidationItem(s: typeof submissions.$inferSelect) {
   const needsHuman =
@@ -24,6 +25,7 @@ function submissionToValidationItem(s: typeof submissions.$inferSelect) {
     summaryEn: s.summaryEn,
     summaryTe: s.summaryTe,
     confidence: s.confidence,
+    channel: s.channel,
     needsHuman,
   };
 }
@@ -39,6 +41,7 @@ export async function fetchValidationQueue() {
         or(
           isNull(submissions.confidence),
           lt(submissions.confidence, CONFIG.extraction.minConfidence),
+          eq(submissions.channel, "news"),
         ),
         or(isNull(submissions.demandId), eq(submissions.status, "received")),
       ),
@@ -179,4 +182,59 @@ export async function fetchQuarantineClusters() {
     coordinationScore: undefined,
     textSimilarity: undefined,
   }));
+}
+
+export async function fetchRoutingAmbiguityQueue() {
+  const rows = await db
+    .select()
+    .from(demands)
+    .where(
+      and(
+        eq(demands.state, "validated_public"),
+        isNull(demands.authorityId)
+      )
+    );
+
+  const items = [];
+  for (const demand of rows) {
+    const proposal = await proposeRouting({
+      category: demand.category,
+      ward: demand.ward,
+    });
+
+    if ("needsHuman" in proposal && proposal.needsHuman) {
+      items.push({
+        demandId: demand.id,
+        title: demand.title,
+        category: demand.category,
+        ward: demand.ward,
+        urgency: demand.urgency,
+        reason: proposal.reason,
+        candidates: proposal.candidates,
+      });
+    }
+  }
+  return items;
+}
+
+export async function fetchTranscriptionQueue() {
+  return db
+    .select()
+    .from(submissions)
+    .where(
+      and(
+        eq(submissions.status, "received"),
+        or(
+          and(
+            eq(submissions.channel, "voice"),
+            or(
+              isNull(submissions.confidence),
+              lt(submissions.confidence, CONFIG.extraction.minConfidence)
+            )
+          ),
+          lt(submissions.asrConfidence, CONFIG.extraction.minConfidence)
+        )
+      )
+    )
+    .then(rows => rows.map(submissionToValidationItem));
 }

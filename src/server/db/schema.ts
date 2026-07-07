@@ -42,6 +42,7 @@ export const submissions = pgTable("submissions", {
   summaryEn: text("summary_en"),
   summaryTe: text("summary_te"),
   confidence: real("confidence"),
+  asrConfidence: real("asr_confidence"),
   embedding: jsonb("embedding"), // number[] — Gemini embedding for merge matching
   status: text("status").default("received").notNull(), // received | extracted | merged | quarantined | rejected
   demandId: uuid("demand_id"),

@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
           summaryEn: body.extraction?.summaryEn,
           summaryTe: body.extraction?.summaryTe,
           confidence: body.extraction?.confidence,
+          asrConfidence: body.extraction?.asrConfidence,
           status,
         })
         .returning();

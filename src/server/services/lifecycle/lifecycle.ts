@@ -13,6 +13,23 @@ export const DEMAND_STATES = [
   "resolved_verified",
   "reopened",
   "resolved_unverified",
+
+  // PROJECT states
+  "identified",
+  "scoped",
+  "cost_estimated",
+  "funding_mapped",
+  "recommended",
+  "sanctioned",
+  "tendered",
+  "executing",
+  "delivered",
+  "citizen_verified",
+  "awaiting_funds",
+  "deprioritized",
+
+  // DISPUTE states
+  "dispute_active"
 ] as const;
 
 export type DemandState = (typeof DEMAND_STATES)[number];
@@ -24,9 +41,24 @@ export type LifecycleEvent =
   | "fix_claim"
   | "verify_confirm"
   | "verify_deny"
-  | "verify_timeout";
+  | "verify_timeout"
+  
+  // PROJECT events
+  | "scope"
+  | "estimate_cost"
+  | "map_funding"
+  | "recommend"
+  | "sanction"
+  | "tender"
+  | "execute"
+  | "deliver"
+  | "hold_funds"
+  | "deprioritize"
+  
+  // DISPUTE events
+  | "append_case";
 
-const TRANSITIONS: Record<DemandState, Partial<Record<LifecycleEvent, DemandState>>> = {
+const GRIEVANCE_TRANSITIONS: Partial<Record<DemandState, Partial<Record<LifecycleEvent, DemandState>>>> = {
   claimed: { validate: "validated_public" },
   validated_public: { route: "routed" },
   routed: { start_progress: "in_progress", fix_claim: "fix_claimed" },
@@ -41,6 +73,25 @@ const TRANSITIONS: Record<DemandState, Partial<Record<LifecycleEvent, DemandStat
   resolved_unverified: {},
 };
 
+const PROJECT_TRANSITIONS: Partial<Record<DemandState, Partial<Record<LifecycleEvent, DemandState>>>> = {
+  identified: { scope: "scoped", deprioritize: "deprioritized" },
+  scoped: { estimate_cost: "cost_estimated", deprioritize: "deprioritized" },
+  cost_estimated: { map_funding: "funding_mapped", hold_funds: "awaiting_funds", deprioritize: "deprioritized" },
+  funding_mapped: { recommend: "recommended", deprioritize: "deprioritized" },
+  recommended: { sanction: "sanctioned", deprioritize: "deprioritized" },
+  sanctioned: { tender: "tendered", deprioritize: "deprioritized" },
+  tendered: { execute: "executing" },
+  executing: { deliver: "delivered" },
+  delivered: { verify_confirm: "citizen_verified", verify_deny: "executing" },
+  awaiting_funds: { map_funding: "funding_mapped", deprioritize: "deprioritized" },
+  deprioritized: { scope: "scoped", estimate_cost: "cost_estimated" },
+  citizen_verified: {},
+};
+
+const DISPUTE_TRANSITIONS: Partial<Record<DemandState, Partial<Record<LifecycleEvent, DemandState>>>> = {
+  dispute_active: { append_case: "dispute_active" }
+};
+
 export class IllegalTransitionError extends Error {
   constructor(
     public readonly from: DemandState,
@@ -52,18 +103,26 @@ export class IllegalTransitionError extends Error {
 }
 
 /** Pure transition function. Throws on illegal transitions. */
-export function transition(state: DemandState, event: LifecycleEvent): DemandState {
-  const next = TRANSITIONS[state]?.[event];
+export function transition(state: DemandState, event: LifecycleEvent, kind: string = "grievance"): DemandState {
+  let transitions = GRIEVANCE_TRANSITIONS;
+  if (kind === "project") transitions = PROJECT_TRANSITIONS;
+  else if (kind === "dispute") transitions = DISPUTE_TRANSITIONS;
+
+  const next = transitions[state]?.[event];
   if (!next) throw new IllegalTransitionError(state, event);
   return next;
 }
 
 /** All legal events from a given state. */
-export function legalEvents(state: DemandState): LifecycleEvent[] {
-  return Object.keys(TRANSITIONS[state] ?? {}) as LifecycleEvent[];
+export function legalEvents(state: DemandState, kind: string = "grievance"): LifecycleEvent[] {
+  let transitions = GRIEVANCE_TRANSITIONS;
+  if (kind === "project") transitions = PROJECT_TRANSITIONS;
+  else if (kind === "dispute") transitions = DISPUTE_TRANSITIONS;
+
+  return Object.keys(transitions[state] ?? {}) as LifecycleEvent[];
 }
 
 /** Whether a state is terminal (no outgoing transitions). */
-export function isTerminalState(state: DemandState): boolean {
-  return legalEvents(state).length === 0;
+export function isTerminalState(state: DemandState, kind: string = "grievance"): boolean {
+  return legalEvents(state, kind).length === 0;
 }

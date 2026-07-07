@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "db:reset": "tsx src/server/db/reset.ts",
     "seed": "tsx seed/load.ts",
     "demo:reset": "tsx seed/load.ts --reset",
     "eval:extraction": "tsx scripts/eval-extraction.ts",

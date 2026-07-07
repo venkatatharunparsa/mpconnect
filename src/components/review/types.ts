@@ -30,6 +30,7 @@ export interface ValidationItem {
   summaryTe?: string;
   confidence?: number;
   needsHuman?: boolean;
+  channel?: string;
 }
 
 export interface DemandSummary {

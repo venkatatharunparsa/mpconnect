@@ -39,21 +39,21 @@
     },
     {
       "ward": "mvp",
-      "source": "UDISE+ 2021-22 (Mandal estimate)",
-      "sourceUrl": "https://udiseplus.gov.in/",
+      "source": "UDISE+ 2021-22 (KDPM High School, Ward 22)",
+      "sourceUrl": "https://schools.org.in/visakhapatanam/28132991095/kdpm-high-school-ward-no-22.html",
       "metric": "school_enrollment",
-      "value": 2100,
-      "estimated": true,
-      "note": "Estimated total primary government school enrollment for MVP Colony ward"
+      "value": 923,
+      "estimated": false,
+      "note": "KDPM High School student enrollment count - serving Chinna Waltair and MVP Colony"
     },
     {
       "ward": "bheemili",
-      "source": "UDISE+ 2021-22 (Mandal estimate)",
-      "sourceUrl": "https://udiseplus.gov.in/",
+      "source": "UDISE+ 2021-22 (ZPHS Tallavalasa)",
+      "sourceUrl": "https://schools.org.in/visakhapatanam/28132790235/zphs-tallavalasa.html",
       "metric": "school_enrollment",
-      "value": 1500,
-      "estimated": true,
-      "note": "Estimated total primary government school enrollment for Bheemili ward"
+      "value": 353,
+      "estimated": false,
+      "note": "ZPHS Tallavalasa student enrollment count"
     },
     {
       "ward": "bheemili",
