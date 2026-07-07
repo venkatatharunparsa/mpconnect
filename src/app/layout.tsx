@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <nav className="bg-primary text-white px-4 py-3 flex items-center gap-6 text-sm">
+        <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 bg-primary px-4 py-3 text-sm text-white">
           <Link href="/" className="font-bold text-base tracking-tight">
             MPconnect
           </Link>
