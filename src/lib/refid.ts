@@ -1,6 +1,9 @@
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { CONFIG } from "@/lib/config";
+import { isValidRefIdFormat } from "@/lib/refid-format";
+
+export { isValidRefIdFormat };
 
 let sequenceReady = false;
 
@@ -24,7 +27,3 @@ export async function generateRefId(): Promise<string> {
   return `${CONFIG.refIdPrefix}-${yymm}-${suffix}`;
 }
 
-/** Validate ref ID format without DB access. */
-export function isValidRefIdFormat(refId: string): boolean {
-  return /^VZG-\d{4}-\d{5}$/.test(refId);
-}
