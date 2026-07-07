@@ -101,7 +101,8 @@ export async function POST(req: NextRequest) {
         !overRateCap &&
         body.extraction &&
         !payloadFlags.needs_human &&
-        !body.deferMerge
+        !body.deferMerge &&
+        body.channel !== "news"
       ) {
         const traceId = getTraceId();
         await triggerMergeProcessing(row.id, traceId);
