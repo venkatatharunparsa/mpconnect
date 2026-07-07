@@ -30,11 +30,12 @@ export type SubmitPayload = {
   citizenKey: string;
   rawText?: string;
   extraction: GeminiExtraction;
+  channel?: "web" | "voice";
 };
 
 export async function submitExtracted(payload: SubmitPayload) {
   return postSubmission({
-    channel: "web",
+    channel: payload.channel ?? "web",
     citizenKey: payload.citizenKey,
     rawText: payload.rawText,
     lang: payload.extraction.lang,
