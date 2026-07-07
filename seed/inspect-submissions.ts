@@ -1,9 +1,9 @@
 import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 
-import { db } from "../src/db";
+import { db } from "../src/server/db";
 import { count, eq, like } from "drizzle-orm";
-import { submissions, events } from "../src/db/schema";
+import { submissions, events } from "../src/server/db/schema";
 
 async function main() {
   const schoolSubs = await db

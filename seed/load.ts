@@ -6,8 +6,8 @@
  */
 import { readFileSync } from "fs";
 import { join } from "path";
-import { db } from "../src/db";
-import { authorities, wards, datasets, demands, submissions, events } from "../src/db/schema";
+import { db } from "../src/server/db";
+import { authorities, wards, datasets, demands, submissions, events } from "../src/server/db/schema";
 
 const reset = process.argv.includes("--reset");
 

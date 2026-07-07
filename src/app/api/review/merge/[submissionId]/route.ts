@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { submissions } from "@/db/schema";
-import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/lib/api-helpers";
-import { appendEvent } from "@/lib/events";
+import { db } from "@/server/db";
+import { submissions } from "@/server/db/schema";
+import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/api-helpers";
+import { appendEvent } from "@/server/services/events";
 
 const bodySchema = z
   .object({
@@ -32,7 +32,7 @@ export async function POST(
     if (!sub) return jsonError("Submission not found", 404);
 
     try {
-      const mod = await import("@/lib/merge");
+      const mod = await import("@/server/services/merge");
       if (typeof mod.applyMergeReviewDecision === "function") {
         const result = await mod.applyMergeReviewDecision({
           submissionId: params.submissionId,

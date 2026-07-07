@@ -1,9 +1,9 @@
 import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 
-import { db } from "../src/db";
+import { db } from "../src/server/db";
 import { count } from "drizzle-orm";
-import { submissions, demands, events } from "../src/db/schema";
+import { submissions, demands, events } from "../src/server/db/schema";
 
 async function main() {
   const [subsCount] = await db.select({ count: count() }).from(submissions);

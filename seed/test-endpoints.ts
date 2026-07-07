@@ -3,8 +3,8 @@ loadEnvConfig(process.cwd());
 
 import { GET as getEvidence } from "../src/app/api/demands/[id]/evidence/route";
 import { GET as getMplads } from "../src/app/api/demands/[id]/mplads-pack/route";
-import { db } from "../src/db";
-import { demands } from "../src/db/schema";
+import { db } from "../src/server/db";
+import { demands } from "../src/server/db/schema";
 import { eq } from "drizzle-orm";
 
 async function main() {

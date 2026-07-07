@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
-import { db } from "@/db";
-import { demands } from "@/db/schema";
-import { jsonOk, handleApiError } from "@/lib/api-helpers";
+import { db } from "@/server/db";
+import { demands } from "@/server/db/schema";
+import { jsonOk, handleApiError } from "@/server/services/api-helpers";
 
 export async function GET() {
   try {

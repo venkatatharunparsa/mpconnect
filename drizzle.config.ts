@@ -4,7 +4,7 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 
 export default defineConfig({
-  schema: "./src/db/schema.ts",
+  schema: "./src/server/db/schema.ts",
   dialect: "postgresql",
   dbCredentials: { url: process.env.DATABASE_URL! },
 });

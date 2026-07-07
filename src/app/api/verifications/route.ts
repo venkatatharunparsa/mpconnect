@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import { and, eq } from "drizzle-orm";
-import { db } from "@/db";
-import { demands, verifications } from "@/db/schema";
-import { jsonOk, handleApiError } from "@/lib/api-helpers";
+import { db } from "@/server/db";
+import { demands, verifications } from "@/server/db/schema";
+import { jsonOk, handleApiError } from "@/server/services/api-helpers";
 
 export async function GET(req: NextRequest) {
   try {

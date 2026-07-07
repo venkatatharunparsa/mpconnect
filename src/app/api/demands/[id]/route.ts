@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { demands } from "@/db/schema";
-import { jsonOk, jsonError, handleApiError } from "@/lib/api-helpers";
-import { demandTimeline, verifyChain } from "@/lib/events";
+import { db } from "@/server/db";
+import { demands } from "@/server/db/schema";
+import { jsonOk, jsonError, handleApiError } from "@/server/services/api-helpers";
+import { demandTimeline, verifyChain } from "@/server/services/events";
 
 export async function GET(
   _req: Request,
