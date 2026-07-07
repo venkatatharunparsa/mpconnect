@@ -12,6 +12,7 @@ import { z } from "zod";
 import { TAXONOMY, CATEGORY_CODES } from "@/lib/taxonomy";
 
 const EXTRACTION_MODEL = "gemini-2.0-flash";
+const EMBEDDING_MODEL = "text-embedding-004";
 
 export const geminiExtractionSchema = z
   .object({
@@ -140,4 +141,34 @@ export async function extractSubmission(
   }
 
   return { needsHuman: true, raw: lastError };
+}
+
+/** Gemini text embedding for merge engine (Person C). */
+export async function embedText(text: string): Promise<number[]> {
+  const genAI = getGenAI();
+  const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
+  const result = await model.embedContent(text);
+  const values = result.embedding.values;
+  if (!values?.length) throw new Error("Empty embedding returned");
+  return values;
+}
+
+/** Evidence-panel narrator — numbers in the input JSON are the only permitted facts. */
+export async function narrateComparison(numbers: Record<string, unknown>): Promise<string> {
+  const genAI = getGenAI();
+  const model = genAI.getGenerativeModel({
+    model: EXTRACTION_MODEL,
+    systemInstruction: `You write a 3-sentence comparison narrative for an MP evidence panel.
+STRICT RULE: Use ONLY facts and figures present in the input JSON.
+If the input lacks a figure, write "data not available" — never supply your own.
+Do not cite authorities, schemes, or statistics unless they appear verbatim in the input.`,
+    generationConfig: { temperature: 0.2, maxOutputTokens: 400 },
+  });
+
+  const result = await model.generateContent(
+    `INPUT JSON (sole source of truth — do not use outside knowledge):\n${JSON.stringify(numbers, null, 2)}\n\nWrite exactly 3 sentences comparing the demand against the dataset figures.`,
+  );
+  const text = result.response.text();
+  if (!text) throw new Error("Empty narration response");
+  return text.trim();
 }
