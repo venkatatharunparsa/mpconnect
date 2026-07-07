@@ -88,7 +88,7 @@ export default function VoicePage() {
           systemInstruction: LIVE_SYSTEM,
         },
         callbacks: {
-          onmessage: (msg) => {
+          onmessage: (msg: any) => {
             const parts = msg.serverContent?.modelTurn?.parts ?? [];
             for (const p of parts) {
               if (p.text) {
