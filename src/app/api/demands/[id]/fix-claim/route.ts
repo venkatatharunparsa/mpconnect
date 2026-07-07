@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { demands, submissions, verifications } from "@/db/schema";
-import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/lib/api-helpers";
-import { CONFIG } from "@/lib/config";
-import { appendEvent } from "@/lib/events";
-import { transition } from "@/lib/lifecycle";
-import type { DemandState } from "@/lib/lifecycle";
+import { db } from "@/server/db";
+import { demands, submissions, verifications } from "@/server/db/schema";
+import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/api-helpers";
+import { CONFIG } from "@/server/config";
+import { appendEvent } from "@/server/services/events";
+import { transition } from "@/server/services/lifecycle";
+import type { DemandState } from "@/server/services/lifecycle";
 
 const bodySchema = z
   .object({

@@ -5,7 +5,7 @@
  */
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
-import { extractSubmission } from "../src/lib/gemini";
+import { extractSubmission } from "../src/server/services/gemini";
 
 function loadEnv() {
   const envPath = join(process.cwd(), ".env.local");

@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
-import { jsonOk, jsonError, handleApiError } from "@/lib/api-helpers";
-import { intakeSchema } from "@/lib/intake-schema";
-import { generateRefId } from "@/lib/refid";
-import { db } from "@/db";
-import { submissions } from "@/db/schema";
-import { appendEvent } from "@/lib/events";
-import { checkCluster } from "@/lib/abuse-cluster";
+import { jsonOk, jsonError, handleApiError } from "@/server/services/api-helpers";
+import { intakeSchema } from "@/server/services/intake-schema";
+import { generateRefId } from "@/server/services/refid";
+import { db } from "@/server/db";
+import { submissions } from "@/server/db/schema";
+import { appendEvent } from "@/server/services/events";
+import { checkCluster } from "@/server/services/abuse-cluster";
 
 const ATTACK_TEMPLATE =
   "There is a major pothole on Main Road near the bus stop causing accidents daily please fix immediately";

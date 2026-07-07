@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { demands } from "@/db/schema";
-import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/lib/api-helpers";
-import { appendEvent } from "@/lib/events";
-import { transition } from "@/lib/lifecycle";
-import type { DemandState } from "@/lib/lifecycle";
+import { db } from "@/server/db";
+import { demands } from "@/server/db/schema";
+import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/api-helpers";
+import { appendEvent } from "@/server/services/events";
+import { transition } from "@/server/services/lifecycle";
+import type { DemandState } from "@/server/services/lifecycle";
 
 const bodySchema = z
   .object({

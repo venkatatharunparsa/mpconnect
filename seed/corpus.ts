@@ -3,13 +3,13 @@ loadEnvConfig(process.cwd());
 
 import { POST } from "../src/app/api/submissions/route";
 import { NextRequest } from "next/server";
-import { db } from "../src/db";
-import { submissions, events } from "../src/db/schema";
+import { db } from "../src/server/db";
+import { submissions, events } from "../src/server/db/schema";
 import { count, eq, like } from "drizzle-orm";
 import { createHash } from "crypto";
 import * as fs from "fs";
 import * as path from "path";
-import { processSubmission } from "../src/lib/merge";
+import { processSubmission } from "../src/server/services/merge";
 
 const GENESIS = "mpconnect-genesis-2026";
 

@@ -1,6 +1,6 @@
 import type { Bot } from "grammy";
-import { createTelegramBot } from "@/lib/telegram-bot";
-import { isDuplicateUpdate } from "@/lib/telegram-helpers";
+import { createTelegramBot } from "@/server/adapters/telegram-bot";
+import { isDuplicateUpdate } from "@/server/adapters/telegram-helpers";
 
 export const runtime = "nodejs";
 
