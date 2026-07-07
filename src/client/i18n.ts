@@ -26,6 +26,8 @@ export const STRINGS = {
     denyNotFixed: "No, not fixed",
     demoIdentity: "Demo identity",
     thinking: "…",
+    rateCapReview:
+      "Your report was received — it is under human review awaiting corroboration.",
   },
   te: {
     title: "మీ సమస్య చెప్పండి", // TODO_TE
@@ -52,6 +54,8 @@ export const STRINGS = {
     denyNotFixed: "లేదు, పరిష్కరించలేదు", // TODO_TE
     demoIdentity: "డెమో గుర్తింపు", // TODO_TE
     thinking: "…", // TODO_TE
+    rateCapReview:
+      "మీ నివేదిక స్వీకరించబడింది — ధృవీకరణ కోసం మానవ సమీక్షలో ఉంది.", // TODO_TE
   },
 } as const;
 

@@ -1,7 +1,7 @@
 /** Thresholds & weights — sacred contract #5 (config-not-code). Tune here only. */
 export const CONFIG = {
   merge: {
-    thetaHi: 0.82, // >= auto-merge
+    thetaHi: 0.75, // >= auto-merge (tuned for cross-lingual embedding cosine ~0.6–0.75)
     thetaLo: 0.6, // < new demand; between = human review queue
     geoRadiusKm: 1.5,
     timeWindowDays: 60,

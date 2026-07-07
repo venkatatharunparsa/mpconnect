@@ -75,6 +75,8 @@ pnpm db:push && pnpm seed
 pnpm dev
 ```
 
+**API key hygiene:** The browser voice page uses `NEXT_PUBLIC_GEMINI_API_KEY` for Gemini Live. Restrict that key in [Google AI Studio](https://aistudio.google.com/) to your deployed domain and the Live API only — never commit real keys.
+
 ### Plugging the real toll-free line
 
 The `TollFreeAdapter` in `src/lib/adapters/tollfree.ts` is the socket for PSTN callers. When Exotel provisions the number: set `EXOTEL_SID` / `EXOTEL_TOKEN`, point the Exotel voice applet to your `/api/adapters/exotel/voice` webhook, and bridge the media stream to the same `extractSubmission` → `POST /api/submissions` path the browser `/voice` page uses. The hackathon demo uses the browser agent; the adapter stub ships ready to wire.

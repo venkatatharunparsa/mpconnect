@@ -17,6 +17,10 @@ export const SUBMIT_LABELS = {
   },
   refLookup: { en: "Looking up reference…", te: "రిఫరెన్స్ చూస్తున్నాం…" },
   demoIdentity: { en: "Demo identity", te: "డెమో గుర్తింపు" },
+  rateCapReview: {
+    en: "Your report was received — it is under human review awaiting corroboration.",
+    te: "మీ నివేదిక స్వీకరించబడింది — ధృవీకరణ కోసం మానవ సమీక్షలో ఉంది.", // TODO_TE
+  },
 } as const;
 
 export function t(key: keyof typeof SUBMIT_LABELS, locale: SubmitLocale): string {

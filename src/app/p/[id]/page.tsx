@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PERSONAL_CATEGORIES } from "@/lib/taxonomy";
+import { PERSONAL_CATEGORIES } from "@/server/taxonomy";
 import { RallyPointClient } from "@/components/RallyPointClient";
 
 // TODO: confirm shape with A — server-side fetch for metadata when API exists

@@ -41,7 +41,7 @@ async function postSubmission(body: Record<string, unknown>) {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error ?? "Submission failed");
-  return data as { refId: string; status: string };
+  return data as { refId: string; status: string; flags?: { reason?: string } };
 }
 
 export function createTelegramBot(): Bot {
@@ -137,8 +137,13 @@ export function createTelegramBot(): Bot {
         ? extraction.summaryTe
         : extraction.summaryEn;
 
+    const rateCapNote =
+      submitted.flags?.reason === "rate_cap"
+        ? "\n\nమీ నివేదిక స్వీకరించబడింది — ధృవీకరణ కోసం మానవ సమీక్షలో ఉంది."
+        : "";
+
     await ctx.reply(
-      `${summary}\n\nమీ సమస్య నమోదైంది. Ref: ${submitted.refId}. Track anytime: /status ${submitted.refId}`,
+      `${summary}\n\nమీ సమస్య నమోదైంది. Ref: ${submitted.refId}. Track anytime: /status ${submitted.refId}${rateCapNote}`,
     );
 
     await maybePromptVerification(ctx, citizenKey);

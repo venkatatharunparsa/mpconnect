@@ -314,6 +314,11 @@ export async function split(
   const splitSubs = await db.select().from(submissions).where(inArray(submissions.id, submissionIds));
   if (splitSubs.length === 0) throw new Error("No submissions found to split");
 
+  const foreign = splitSubs.filter((s) => s.demandId !== demandId);
+  if (foreign.length > 0) {
+    throw new Error("One or more submissions do not belong to the source demand");
+  }
+
   // Create new demand from first split submission
   const refSub = splitSubs[0];
   const [newDemand] = await db
@@ -373,7 +378,23 @@ export async function split(
     await recomputeRank(demandId);
     await checkCorroboration(demandId);
   } else {
-    await db.update(demands).set({ affectedCount: 0, updatedAt: new Date() }).where(eq(demands.id, demandId));
+    const [origin] = await db.select().from(demands).where(eq(demands.id, demandId)).limit(1);
+    await db
+      .update(demands)
+      .set({
+        affectedCount: 0,
+        title: `${origin?.title ?? "Demand"} (closed — split)`,
+        updatedAt: new Date(),
+      })
+      .where(eq(demands.id, demandId));
+
+    await appendEvent({
+      eventType: "DemandEmptied",
+      demandId,
+      actorType: "system",
+      actorId: actorId,
+      payload: { reason: "all_submissions_split_out", toDemandId: newDemand.id },
+    });
   }
 
   // Recalculate new demand

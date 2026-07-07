@@ -18,7 +18,7 @@ export const events = pgTable("events", {
   payload: jsonb("payload").notNull(),
   prevHash: text("prev_hash").notNull(), // SHA-256 of previous event in this demand's chain (or genesis)
   hash: text("hash").notNull(), // SHA-256 of this event's canonical form
-  occurredAt: timestamp("occurred_at").defaultNow().notNull(),
+  occurredAt: timestamp("occurred_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 /** One citizen submission via any channel. */
@@ -67,6 +67,7 @@ export const demands = pgTable("demands", {
   rankBreakdown: jsonb("rank_breakdown"), // {affected, urgency, recurrence, equity, dataGap}
   falseClosureCount: integer("false_closure_count").default(0).notNull(),
   verifiedResolved: boolean("verified_resolved").default(false).notNull(),
+  evidenceNarrative: text("evidence_narrative"), // cached Gemini comparison (BUG-11)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

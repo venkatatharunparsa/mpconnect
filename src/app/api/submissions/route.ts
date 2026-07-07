@@ -97,9 +97,14 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      if (!overRateCap && body.extraction) {
+      if (
+        !overRateCap &&
+        body.extraction &&
+        !payloadFlags.needs_human &&
+        !body.deferMerge
+      ) {
         const traceId = getTraceId();
-        triggerMergeProcessing(row.id, traceId).catch(console.error);
+        await triggerMergeProcessing(row.id, traceId);
       }
 
       return jsonOk({

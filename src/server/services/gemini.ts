@@ -197,7 +197,8 @@ export async function embedText(text: string): Promise<number[]> {
   const result = await model.embedContent(text);
   const values = result.embedding.values;
   if (!values?.length) throw new Error("Empty embedding returned");
-  return values;
+  const mag = Math.sqrt(values.reduce((s, v) => s + v * v, 0)) || 1;
+  return values.map((v) => v / mag);
 }
 
 /** Evidence-panel narrator — numbers in the input JSON are the only permitted facts. */

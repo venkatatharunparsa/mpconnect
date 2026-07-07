@@ -5,9 +5,13 @@
  * every subsequent hash — verifyChain() detects it.
  */
 import { createHash } from "crypto";
+import { sql, desc, eq } from "drizzle-orm";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { db } from "@/server/db";
+import * as schema from "@/server/db/schema";
 import { events } from "@/server/db/schema";
-import { desc, eq } from "drizzle-orm";
+
+type DbExecutor = PostgresJsDatabase<typeof schema>;
 
 const GENESIS = "mpconnect-genesis-2026";
 
@@ -23,7 +27,6 @@ export interface AppendEventInput {
 }
 
 function canonical(input: AppendEventInput, prevHash: string, occurredAt: string) {
-  // Stable stringify: sorted keys, fixed field order.
   return JSON.stringify({
     eventType: input.eventType,
     demandId: input.demandId ?? null,
@@ -52,18 +55,15 @@ export function sha256(s: string): string {
   return createHash("sha256").update(s).digest("hex");
 }
 
-/** Append one event, computing the chain hash. Returns the inserted row. */
-export async function appendEvent(input: AppendEventInput) {
-  const prev = input.demandId
-    ? await db.query.events.findFirst({
-        where: eq(events.demandId, input.demandId),
-        orderBy: [desc(events.id)],
-      })
-    : undefined;
-  const prevHash = prev?.hash ?? GENESIS;
-  const occurredAt = new Date();
-  const hash = sha256(canonical(input, prevHash, occurredAt.toISOString()));
-  const [row] = await db
+async function insertEvent(
+  tx: DbExecutor,
+  input: AppendEventInput,
+  prevHash: string,
+  occurredAt: Date,
+) {
+  const occurredAtIso = occurredAt.toISOString();
+  const hash = sha256(canonical(input, prevHash, occurredAtIso));
+  const [row] = await tx
     .insert(events)
     .values({
       eventType: input.eventType,
@@ -78,6 +78,26 @@ export async function appendEvent(input: AppendEventInput) {
     })
     .returning();
   return row;
+}
+
+/** Append one event, computing the chain hash. Returns the inserted row. */
+export async function appendEvent(input: AppendEventInput) {
+  const occurredAt = new Date();
+
+  if (!input.demandId) {
+    return insertEvent(db, input, GENESIS, occurredAt);
+  }
+
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${input.demandId!}))`);
+
+    const prev = await tx.query.events.findFirst({
+      where: eq(events.demandId, input.demandId!),
+      orderBy: [desc(events.id)],
+    });
+    const prevHash = prev?.hash ?? GENESIS;
+    return insertEvent(tx, input, prevHash, occurredAt);
+  });
 }
 
 /** Verify a demand's full chain. Returns { ok, brokenAtEventId? }. */

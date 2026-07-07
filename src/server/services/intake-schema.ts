@@ -27,6 +27,8 @@ export const intakeSchema = z
     audioUrl: z.string().optional(),
     lang: z.enum(["te", "en", "mixed"]).optional(),
     extraction: extractionSchema.optional(),
+    /** When true, intake skips merge — corpus calls processSubmission after backdating. */
+    deferMerge: z.boolean().optional(),
   })
   .strict();
 

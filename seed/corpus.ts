@@ -322,6 +322,7 @@ async function main() {
         rawText: item.rawText,
         lang: item.lang,
         extraction: item.extraction,
+        deferMerge: true,
       }),
     });
 

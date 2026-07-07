@@ -103,7 +103,11 @@ export default function SubmitPage() {
       const result = await submitExtracted({ citizenKey, rawText, extraction });
       const summary =
         lang === "te" && extraction.summaryTe ? extraction.summaryTe : extraction.summaryEn;
-      addBot(t(lang, "registered", { refId: result.refId }), { refId: result.refId });
+      let reply = t(lang, "registered", { refId: result.refId });
+      if (result.flags?.reason === "rate_cap") {
+        reply += `\n\n${t(lang, "rateCapReview")}`;
+      }
+      addBot(reply, { refId: result.refId });
       return { result, summary };
     },
     [addBot, citizenKey, lang],

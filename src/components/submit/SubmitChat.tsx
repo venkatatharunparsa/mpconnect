@@ -14,7 +14,11 @@ async function submitIntake(body: Record<string, unknown>) {
       body: JSON.stringify(body),
     });
     if (!res.ok) return null;
-    return (await res.json()) as { refId?: string; summary?: string };
+    return (await res.json()) as {
+      refId?: string;
+      summary?: string;
+      flags?: { reason?: string };
+    };
   } catch {
     return null;
   }
@@ -103,10 +107,12 @@ export function SubmitChat() {
     });
 
     if (result?.refId) {
+      const rateCap =
+        result.flags?.reason === "rate_cap" ? `\n\n${t("rateCapReview", locale)}` : "";
       addBot(
         locale === "te"
-          ? `మీ సమస్య నమోదైంది.\nRef: ${result.refId}`
-          : `Recorded.\nRef: ${result.refId}`,
+          ? `మీ సమస్య నమోదైంది.\nRef: ${result.refId}${rateCap}`
+          : `Recorded.\nRef: ${result.refId}${rateCap}`,
       );
     } else {
       const stubRef = `VZG-${new Date().getFullYear().toString().slice(-2)}07-${String(Math.floor(Math.random() * 99999)).padStart(5, "0")}`;

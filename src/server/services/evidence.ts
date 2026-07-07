@@ -35,6 +35,52 @@ export async function evidenceFor(demandId: string): Promise<EvidenceResult> {
   const [demand] = await db.select().from(demands).where(eq(demands.id, demandId)).limit(1);
   if (!demand) throw new Error("Demand not found");
 
+  if (demand.evidenceNarrative) {
+    const allWardData = await db
+      .select()
+      .from(datasets)
+      .where(eq(datasets.ward, demand.ward ?? ""));
+    let datasetRows = allWardData;
+    if (demand.category === "school_upgrade") {
+      datasetRows = allWardData.filter((r) =>
+        ["school_enrollment", "classrooms", "nearest_govt_school_km"].includes(r.metric),
+      );
+    }
+    const competingDemands = await db
+      .select()
+      .from(demands)
+      .where(and(eq(demands.ward, demand.ward ?? ""), ne(demands.id, demandId)));
+    let competitor: EvidenceResult["competitor"] = null;
+    if (competingDemands.length > 0) {
+      competingDemands.sort((a, b) => b.rankScore - a.rankScore);
+      competitor = {
+        id: competingDemands[0].id,
+        title: competingDemands[0].title,
+        category: competingDemands[0].category,
+        rankScore: competingDemands[0].rankScore,
+      };
+    }
+    return {
+      demandStats: {
+        id: demand.id,
+        title: demand.title,
+        category: demand.category,
+        ward: demand.ward ?? "",
+        affectedCount: demand.affectedCount,
+        rankScore: demand.rankScore,
+      },
+      datasetRows: datasetRows.map((r) => ({
+        metric: r.metric,
+        value: r.value,
+        source: r.source,
+        sourceUrl: r.sourceUrl,
+        estimated: r.estimated ?? false,
+      })),
+      competitor,
+      narrative: demand.evidenceNarrative,
+    };
+  }
+
   // 2. Fetch all dataset rows for the ward
   const allWardData = await db
     .select()
@@ -106,6 +152,11 @@ export async function evidenceFor(demandId: string): Promise<EvidenceResult> {
   }
 
   const narrative = await narrateComparison(numbers);
+
+  await db
+    .update(demands)
+    .set({ evidenceNarrative: narrative, updatedAt: new Date() })
+    .where(eq(demands.id, demandId));
 
   return {
     demandStats: {

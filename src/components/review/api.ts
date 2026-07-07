@@ -89,7 +89,7 @@ export async function decideMerge(
     const res = await fetch(`/api/review/merge/${submissionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ decision, demandId }),
+      body: JSON.stringify({ decision, demandId, actorId: "reviewer" }),
     });
     return res.ok;
   } catch {

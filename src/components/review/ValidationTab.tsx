@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TAXONOMY } from "@/lib/taxonomy";
+import { TAXONOMY } from "@/server/taxonomy";
 import { approveValidation, rejectValidation } from "./api";
 import { REJECT_REASONS, type ValidationItem } from "./types";
 
