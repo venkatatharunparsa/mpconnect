@@ -7,7 +7,7 @@ import {
   telegramCitizenKey,
   wasVerificationPrompted,
 } from "@/lib/telegram-helpers";
-import { isValidRefIdFormat } from "@/lib/refid";
+import { isValidRefIdFormat } from "@/lib/refid-format";
 
 function getToken(): string {
   const token = process.env.TELEGRAM_BOT_TOKEN;

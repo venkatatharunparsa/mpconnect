@@ -6,7 +6,7 @@ import { t, type Lang } from "./i18n";
 import { useVerificationPoll } from "./use-verifications";
 import { formatStatusLines, needsLocationClarify } from "./utils";
 import type { GeminiExtraction } from "@/lib/gemini";
-import { isValidRefIdFormat } from "@/lib/refid";
+import { isValidRefIdFormat } from "@/lib/refid-format";
 
 type Msg = {
   id: string;
