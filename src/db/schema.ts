@@ -110,3 +110,14 @@ export const wards = pgTable("wards", {
   zone: text("zone"),
   geojson: jsonb("geojson").notNull(),
 });
+
+/** Citizen verification poll after an official fix claim. */
+export const verifications = pgTable("verifications", {
+  id: serial("id").primaryKey(),
+  demandId: uuid("demand_id").notNull(),
+  citizenKey: text("citizen_key").notNull(),
+  status: text("status").default("pending").notNull(), // pending | confirmed | denied
+  photoUrl: text("photo_url"),
+  respondedAt: timestamp("responded_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

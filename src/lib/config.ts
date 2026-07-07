@@ -20,6 +20,7 @@ export const CONFIG = {
     burstWindowMinutes: 30,
     burstCountSuspicious: 8,
     textSimilaritySuspicious: 0.93, // templated wording
+    coordinationScoreThreshold: 0.65, // above → cluster quarantine
   },
   rank: {
     weights: { affected: 0.35, urgency: 0.2, recurrence: 0.1, equity: 0.1, dataGap: 0.25 },
@@ -27,6 +28,7 @@ export const CONFIG = {
   verification: {
     timeoutDays: 14,
     pollReporters: 3,
+    quorumConfirm: 2, // confirms needed out of pollReporters for demo
   },
   refIdPrefix: "VZG",
 } as const;
