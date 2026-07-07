@@ -12,6 +12,7 @@
     "db:studio": "drizzle-kit studio",
     "seed": "tsx seed/load.ts",
     "demo:reset": "tsx seed/load.ts --reset",
+    "eval:extraction": "tsx scripts/eval-extraction.ts",
     "test": "vitest run"
   },
   "dependencies": {
