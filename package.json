@@ -13,6 +13,7 @@
     "seed": "tsx seed/load.ts",
     "demo:reset": "tsx seed/load.ts --reset",
     "eval:extraction": "tsx scripts/eval-extraction.ts",
+    "telegram:webhook": "tsx scripts/set-telegram-webhook.ts",
     "test": "vitest run"
   },
   "dependencies": {
