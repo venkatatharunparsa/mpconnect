@@ -1,0 +1,26 @@
+{
+  "_note": "SYNTHETIC placeholder polygons roughly over the real localities — structured exactly as real GVMC ward GeoJSON will be. Replace with official shapefiles if obtained (docs/hackathon-build-pack §5). Do NOT present these boundaries as official.",
+  "wards": [
+    {
+      "id": "gajuwaka",
+      "name": "Gajuwaka (pilot ward — synthetic boundary)",
+      "nameTe": "గాజువాక",
+      "zone": "Zone 4",
+      "geojson": { "type": "Polygon", "coordinates": [[[83.180, 17.670], [83.220, 17.670], [83.220, 17.700], [83.180, 17.700], [83.180, 17.670]]] }
+    },
+    {
+      "id": "mvp",
+      "name": "MVP Colony (pilot ward — synthetic boundary)",
+      "nameTe": "ఎంవీపీ కాలనీ",
+      "zone": "Zone 1",
+      "geojson": { "type": "Polygon", "coordinates": [[[83.320, 17.735], [83.350, 17.735], [83.350, 17.760], [83.320, 17.760], [83.320, 17.735]]] }
+    },
+    {
+      "id": "bheemili",
+      "name": "Bheemunipatnam (pilot ward — synthetic boundary)",
+      "nameTe": "భీమునిపట్నం",
+      "zone": "Bheemunipatnam",
+      "geojson": { "type": "Polygon", "coordinates": [[[83.430, 17.880], [83.470, 17.880], [83.470, 17.910], [83.430, 17.910], [83.430, 17.880]]] }
+    }
+  ]
+}

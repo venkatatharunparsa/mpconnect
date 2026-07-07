@@ -1,0 +1,12 @@
+{
+  "_note": "Evidence-panel datasets. RULE (sacred contract #6): estimated=true rows render as estimates, always. TASK for person C: replace estimated rows with real figures from udiseplus.gov.in / censusindia.gov.in tonight where fetchable; keep sourceUrl pointing at the actual source used.",
+  "rows": [
+    { "ward": "gajuwaka", "source": "Census 2011 (city-level, verified)", "sourceUrl": "https://www.census2011.co.in/census/city/402-visakhapatnam.html", "metric": "city_population", "value": 1728128, "estimated": false, "note": "Visakhapatnam city population, Census 2011 — corroborated in eGov/CEPT field study" },
+    { "ward": "gajuwaka", "source": "UDISE+ (to fetch)", "sourceUrl": "https://udiseplus.gov.in/", "metric": "school_enrollment", "value": 4200, "estimated": true, "note": "PLACEHOLDER — replace with real UDISE+ figure for Gajuwaka-area govt schools" },
+    { "ward": "gajuwaka", "source": "UDISE+ (to fetch)", "sourceUrl": "https://udiseplus.gov.in/", "metric": "classrooms", "value": 96, "estimated": true, "note": "PLACEHOLDER — replace" },
+    { "ward": "gajuwaka", "source": "derived (to compute)", "sourceUrl": "https://udiseplus.gov.in/", "metric": "nearest_govt_school_km", "value": 1.8, "estimated": true, "note": "PLACEHOLDER — compute from UDISE school coordinates" },
+    { "ward": "mvp", "source": "UDISE+ (to fetch)", "sourceUrl": "https://udiseplus.gov.in/", "metric": "school_enrollment", "value": 2100, "estimated": true, "note": "PLACEHOLDER — replace" },
+    { "ward": "bheemili", "source": "UDISE+ (to fetch)", "sourceUrl": "https://udiseplus.gov.in/", "metric": "school_enrollment", "value": 1500, "estimated": true, "note": "PLACEHOLDER — replace" },
+    { "ward": "bheemili", "source": "derived (to compute)", "sourceUrl": "https://udiseplus.gov.in/", "metric": "nearest_govt_school_km", "value": 3.4, "estimated": true, "note": "PLACEHOLDER — the PS's travel-distance example lives here" }
+  ]
+}

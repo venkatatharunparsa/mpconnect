@@ -1,0 +1,126 @@
+{
+  "_note": "Seeded from docs/authority-kb-visakhapatnam-v0.1.md. verified=true only where the research marked ✅ with a source. verified=false entries are quarantined from auto-routing (sacred contract #2). Names are designations, never persons.",
+  "authorities": [
+    {
+      "name": "GVMC Engineering Department (zonal)",
+      "org": "GVMC",
+      "level": "zone",
+      "categories": ["potholes_roads", "streetlights", "water_leakage", "parks_playgrounds"],
+      "wards": null,
+      "sourceUrl": "https://en.wikipedia.org/wiki/Greater_Visakhapatnam_Municipal_Corporation",
+      "sourceNote": "GVMC executive structure: Municipal Commissioner (IAS), zonal commissioners (zones 8→10 per Deccan Chronicle), engineering dept — corroborated by eGov/CEPT field study (docs/validation-report-v1.0.md)",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "GVMC Public Health & Sanitation Department (zonal)",
+      "org": "GVMC",
+      "level": "zone",
+      "categories": ["garbage", "drainage", "pollution"],
+      "wards": null,
+      "sourceUrl": "https://egov.org.in/wp-content/uploads/2024/09/Public-Grievance-Redressal-for-Urban-e-Governance-in-Andhra-Pradesh-Insights-from-Guntur-Visakhapatnam.pdf",
+      "sourceNote": "eGov/CEPT field study: GVMC PGR departments incl. Public Health & Sanitation; top categories garbage removal, drain desilting, water stagnation",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "GVMC Water Supply Department",
+      "org": "GVMC",
+      "level": "district",
+      "categories": ["water_supply"],
+      "wards": null,
+      "sourceUrl": "https://gvmc.gov.in/gvmc/index.php/water-supply",
+      "sourceNote": "GVMC official site water supply wing",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "GVMC Town Planning Department",
+      "org": "GVMC",
+      "level": "district",
+      "categories": ["encroachment"],
+      "wards": null,
+      "sourceUrl": "https://egov.org.in/wp-content/uploads/2024/09/Public-Grievance-Redressal-for-Urban-e-Governance-in-Andhra-Pradesh-Insights-from-Guntur-Visakhapatnam.pdf",
+      "sourceNote": "eGov/CEPT field study lists Town Planning among GVMC PGR departments",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "Ward Secretariat (per-ward, ~650 across GVMC)",
+      "org": "GVMC",
+      "level": "ward",
+      "categories": ["pensions_welfare", "land_revenue"],
+      "wards": null,
+      "sourceUrl": "https://egov.org.in/wp-content/uploads/2024/09/Public-Grievance-Redressal-for-Urban-e-Governance-in-Andhra-Pradesh-Insights-from-Guntur-Visakhapatnam.pdf",
+      "sourceNote": "Field study: ~650 ward secretariats in Visakhapatnam, 1 per 1000-1200 households, 10 functionaries; welfare/entitlement first contact. PERSONAL categories route here privately.",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "Tahsildar (mandal revenue office)",
+      "org": "Revenue",
+      "level": "district",
+      "categories": ["land_revenue"],
+      "wards": null,
+      "sourceUrl": "https://en.wikipedia.org/wiki/Visakhapatnam_district",
+      "sourceNote": "District revenue hierarchy: Collector → RDO (Visakhapatnam & Bheemunipatnam divisions) → Tahsildar per mandal. 2022 reorganization verified.",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "APEPDCL section office (Eastern Power Distribution Co.)",
+      "org": "APEPDCL",
+      "level": "zone",
+      "categories": ["electricity"],
+      "wards": null,
+      "sourceUrl": "https://www.apeasternpower.com/",
+      "sourceNote": "APEPDCL HQ Visakhapatnam; internal escalation designations not yet field-verified (docs/authority-kb §6 marks ⚠️)",
+      "verifiedOn": "2026-07-07",
+      "verified": false
+    },
+    {
+      "name": "District Educational Officer (DEO), Visakhapatnam",
+      "org": "Education",
+      "level": "district",
+      "categories": ["school_upgrade"],
+      "wards": null,
+      "sourceUrl": "https://visakhapatnam.ap.gov.in/",
+      "sourceNote": "Standard AP education hierarchy; specific office contact not yet field-verified (⚠️ in KB) — routes via human review",
+      "verifiedOn": "2026-07-07",
+      "verified": false
+    },
+    {
+      "name": "District Medical & Health Officer (DMHO), Visakhapatnam",
+      "org": "Health",
+      "level": "district",
+      "categories": ["health_facility"],
+      "wards": null,
+      "sourceUrl": "https://visakhapatnam.ap.gov.in/",
+      "sourceNote": "Standard AP health hierarchy; not yet field-verified (⚠️) — human review routing",
+      "verifiedOn": "2026-07-07",
+      "verified": false
+    },
+    {
+      "name": "MP, Visakhapatnam Lok Sabha (MPLADS recommending authority)",
+      "org": "Parliament",
+      "level": "state",
+      "categories": ["school_upgrade", "community_infra", "vocational_training", "parks_playgrounds", "health_facility", "transport"],
+      "wards": null,
+      "sourceUrl": "https://www.mplads.gov.in/MPLADS/UploadedFiles/MPLADSGuidelinesApril2023.pdf",
+      "sourceNote": "MPLADS 2023 guidelines: ₹5cr/yr, works recommended by MP, District Authority sanctions (45-day rejection notice / 75-day sanction clocks). MP: Sribharat Mathukumili (2024, verified via IndiaVotes/Wikipedia).",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    },
+    {
+      "name": "CPGRAMS forwarding (central agencies: Port, Railways, Steel Plant, NHAI)",
+      "org": "Central",
+      "level": "central",
+      "categories": ["pollution", "transport"],
+      "wards": null,
+      "sourceUrl": "https://pgportal.gov.in/",
+      "sourceNote": "Central-subject problems route as CPGRAMS filing packs (docs/functional-requirements FR-RTE-04); used when org jurisdiction is central",
+      "verifiedOn": "2026-07-07",
+      "verified": true
+    }
+  ]
+}
