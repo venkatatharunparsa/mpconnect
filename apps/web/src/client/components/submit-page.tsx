@@ -2,6 +2,8 @@
 
 import { apiFetch } from "@/lib/api-client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getDemoCitizenKey } from "@/components/citizenIdentity";
+import { useApp } from "@/components/shell/AppProvider";
 import { runExtraction, submitExtracted } from "@/lib/intake";
 import { saveRecentSubmission } from "@/lib/recent-submissions";
 import { t, type Lang } from "../i18n";
@@ -32,21 +34,10 @@ type PendingLocation = {
   originalInput: string;
 };
 
-const CITIZEN_KEY_STORAGE = "mpconnect_citizen_key";
 const SAFETY_PREFIX = "mpconnect_safety_";
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
-function getCitizenKey(): string {
-  if (typeof window === "undefined") return "demo-anon";
-  let key = localStorage.getItem(CITIZEN_KEY_STORAGE);
-  if (!key) {
-    key = `DEMO-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
-    localStorage.setItem(CITIZEN_KEY_STORAGE, key);
-  }
-  return key;
 }
 
 function blobToBase64(blob: Blob): Promise<string> {
@@ -62,7 +53,8 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 export default function SubmitPage() {
-  const [lang, setLang] = useState<Lang>("te");
+  const { locale } = useApp();
+  const lang: Lang = locale;
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -85,14 +77,14 @@ export default function SubmitPage() {
   }, []);
 
   useEffect(() => {
-    const key = getCitizenKey();
+    const key = getDemoCitizenKey();
     setCitizenKey(key);
 
     if (!localStorage.getItem(`${SAFETY_PREFIX}${key}`)) {
-      addBot(t("te", "safetyNotice"), { kind: "safety" });
+      addBot(t(lang, "safetyNotice"), { kind: "safety" });
       localStorage.setItem(`${SAFETY_PREFIX}${key}`, "1");
     }
-  }, [addBot]);
+  }, [addBot, lang]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -324,39 +316,28 @@ export default function SubmitPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-lg mx-auto bg-[#e5ddd5] rounded-lg overflow-hidden shadow-lg border border-slate-200">
-      <header className="bg-primary text-white px-4 py-3 flex items-center justify-between shrink-0">
-        <div>
-          <h1 className="font-semibold text-base">{t(lang, "title")}</h1>
-          <p className="text-xs opacity-80">MPconnect intake</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
-            {t(lang, "demoIdentity")}: {citizenKey.slice(-4)}
-          </span>
-          <button
-            type="button"
-            onClick={() => setLang((l) => (l === "te" ? "en" : "te"))}
-            className="text-xs border border-white/40 px-2 py-1 rounded"
-          >
-            {lang === "te" ? "EN" : "TE"}
-          </button>
-        </div>
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-card border border-slate-200 bg-white shadow-card">
+      <header className="shrink-0 border-b border-slate-100 bg-primary px-4 py-3 text-white">
+        <h1 className="font-semibold">{t(lang, "title")}</h1>
+        <p className="text-xs text-white/75">
+          {lang === "te" ? "వాయిస్, టెక్స్ట్ లేదా ఫోటో" : "Voice, text, or photo"} · ref{" "}
+          {citizenKey.slice(-6)}
+        </p>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2">
+      <div className="flex-1 space-y-2 overflow-y-auto bg-surface px-3 py-4">
         {messages.map((m) => (
           <div
             key={m.id}
             className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap shadow-sm ${
+              className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap shadow-sm ${
                 m.role === "user"
-                  ? "bg-[#dcf8c6] text-slate-900"
+                  ? "bg-primary/15 text-slate-900"
                   : m.kind === "safety"
                     ? "bg-amber-50 border border-amber-200 text-amber-900"
-                    : "bg-white text-slate-800"
+                    : "bg-white text-slate-800 ring-1 ring-slate-100"
               }`}
             >
               {m.text}
@@ -413,7 +394,8 @@ export default function SubmitPage() {
         <div ref={bottomRef} />
       </div>
 
-      <footer className="bg-[#f0f0f0] px-2 py-2 flex items-end gap-2 shrink-0 border-t border-slate-300">
+      <footer className="shrink-0 border-t border-slate-200 bg-white px-2 py-2">
+        <div className="flex items-end gap-2">
         <input
           ref={fileInputRef}
           type="file"
@@ -473,10 +455,11 @@ export default function SubmitPage() {
           type="button"
           onClick={() => handleTextSend(input)}
           disabled={busy || !input.trim()}
-          className="shrink-0 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium disabled:opacity-40"
+          className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
         >
           {t(lang, "send")}
         </button>
+        </div>
       </footer>
     </div>
   );

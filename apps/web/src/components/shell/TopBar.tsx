@@ -5,27 +5,31 @@ import { usePathname, useRouter } from "next/navigation";
 import { useApp } from "./AppProvider";
 import { DesktopNav } from "./DesktopNav";
 import { LangToggle } from "./LangToggle";
-import { IconBack, IconBell, IconMenu, IconMic } from "./icons";
+import { IconBack, IconMenu, IconMic } from "./icons";
 import { shellT } from "./labels";
 import { SideMenu } from "./SideMenu";
 
 function titleForPath(pathname: string, locale: ReturnType<typeof useApp>["locale"]) {
   if (pathname === "/") return null;
   if (pathname.startsWith("/submit")) return shellT("reportIssue", locale);
-  if (pathname.startsWith("/dashboard")) return shellT("constituencyOverview", locale);
+  if (pathname.startsWith("/dashboard")) return shellT("priorities", locale);
+  if (pathname.startsWith("/map")) return shellT("map", locale);
   if (pathname.startsWith("/p/")) return shellT("priorities", locale);
   if (pathname.startsWith("/review")) return shellT("menuReview", locale);
   if (pathname.startsWith("/voice")) return shellT("menuVoice", locale);
+  if (pathname.startsWith("/vision")) return shellT("menuVision", locale);
   return "MPconnect";
 }
 
+const ROOT_ROUTES = ["/", "/dashboard", "/map", "/vision"];
+
 export function TopBar() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const router = useRouter();
   const { locale, toggleMenu } = useApp();
   const title = titleForPath(pathname, locale);
-  const showBack = pathname !== "/" && !pathname.startsWith("/dashboard");
-  const onHome = pathname === "/";
+  const onRoot = ROOT_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}?`));
+  const showBack = !onRoot && !pathname.startsWith("/submit");
 
   return (
     <>
@@ -51,14 +55,14 @@ export function TopBar() {
             </button>
           )}
 
-          <div className="min-w-0 shrink-0 lg:min-w-[220px]">
-            {title && !onHome ? (
+          <div className="min-w-0 shrink-0 lg:min-w-[200px]">
+            {title && pathname !== "/" ? (
               <h1 className="truncate text-sm font-bold tracking-wide lg:hidden">{title}</h1>
             ) : null}
             <Link
               href="/"
               className={`block truncate font-bold tracking-wide text-white hover:text-white/90 ${
-                title && !onHome ? "hidden lg:block" : "text-sm lg:text-base"
+                title && pathname !== "/" ? "hidden lg:block" : "text-sm lg:text-base"
               }`}
             >
               MPconnect · {shellT("constituencyShort", locale)}
@@ -76,14 +80,6 @@ export function TopBar() {
               <IconMic className="h-4 w-4" />
               {shellT("startNow", locale)}
             </Link>
-            <button
-              type="button"
-              className="relative rounded-full p-1.5 hover:bg-white/10"
-              aria-label="Notifications"
-            >
-              <IconBell className="h-5 w-5 opacity-90" />
-              <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-accent" />
-            </button>
           </div>
         </div>
       </header>
