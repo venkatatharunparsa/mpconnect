@@ -25,7 +25,14 @@ export function DemandListItem({ demand, locale, selected, onSelect }: DemandLis
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold leading-snug text-slate-900">{demand.title}</h3>
-        <StateBadge state={demand.state} />
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <StateBadge state={demand.state} />
+          {demand.isEscalated && (
+            <span className="inline-flex items-center gap-0.5 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700">
+              ⚠️ SLA Escalated
+            </span>
+          )}
+        </div>
       </div>
       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
         {demand.ward && (

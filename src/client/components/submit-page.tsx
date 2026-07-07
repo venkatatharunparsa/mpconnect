@@ -17,6 +17,8 @@ type Msg = {
   verificationId?: number;
   demandTitle?: string;
   showReadbackChips?: boolean;
+  isHelpdeskPromo?: boolean;
+  originalQuestion?: string;
 };
 
 type PendingVoice = {
@@ -68,6 +70,7 @@ export default function SubmitPage() {
   const [recording, setRecording] = useState(false);
   const [pendingVoice, setPendingVoice] = useState<PendingVoice | null>(null);
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(null);
+  const [mode, setMode] = useState<"grievance" | "helpdesk">("grievance");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -193,6 +196,32 @@ export default function SubmitPage() {
       addUser(trimmed);
       setInput("");
 
+      if (mode === "helpdesk") {
+        setBusy(true);
+        try {
+          const res = await fetch("/api/helpdesk", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: trimmed }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            addBot(data.answer);
+            addBot(
+              "మీరు దీనిని ఒక గ్రీవెన్స్ (ఫిర్యాదు) రూపంలో నమోదు చేయాలనుకుంటున్నారా?\n\nDo you want to file this as an official grievance?",
+              { isHelpdeskPromo: true, originalQuestion: trimmed }
+            );
+          } else {
+            addBot("క్షమించండి, సహాయ కేంద్రం సమాచారాన్ని కనుగొనలేకపోయింది.\n\nSorry, Help Desk could not retrieve information.");
+          }
+        } catch {
+          addBot("క్షమించండి, సహాయ కేంద్రం సమాచారాన్ని కనుగొనలేకపోయింది.\n\nSorry, Help Desk could not retrieve information.");
+        } finally {
+          setBusy(false);
+        }
+        return;
+      }
+
       if (isValidRefIdFormat(trimmed.toUpperCase())) {
         await lookupRefId(trimmed.toUpperCase());
         return;
@@ -243,6 +272,7 @@ export default function SubmitPage() {
       pendingLocation,
       pendingVoice,
       processExtraction,
+      mode,
     ],
   );
 
@@ -389,6 +419,22 @@ export default function SubmitPage() {
                     className="flex-1 bg-reopened text-white text-xs py-2 rounded-lg"
                   >
                     {t(lang, "denyNotFixed")}
+                  </button>
+                </div>
+              )}
+              {m.isHelpdeskPromo && (
+                <div className="flex gap-2 mt-2">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setMode("grievance");
+                      setInput(m.originalQuestion ?? "");
+                      addBot("సమస్య నమోదు ప్రక్రియకు మార్చబడింది. దయచేసి క్రింద ఉన్న బటన్‌ను ఉపయోగించి పంపండి.\n\nSwitched to grievance reporting. Please click send to submit your question as a grievance.");
+                    }}
+                    className="flex-1 bg-primary text-white text-xs py-2 rounded-lg"
+                  >
+                    {lang === "te" ? "ఫిర్యాదుగా నమోదు చేయి" : "Yes, file grievance"}
                   </button>
                 </div>
               )}

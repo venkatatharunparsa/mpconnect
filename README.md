@@ -6,7 +6,7 @@
 
 🔗 **Live demo:** `TODO_URL` · 🎬 **3-min video:** `TODO_VIDEO` · 📚 **[19 research & design documents](./docs/)**
 
-<!-- TODO: hero screenshot -->
+![MPconnect Hero Dashboard](/public/screenshots/dashboard.png)
 
 ## The problem (from the ground, not from imagination)
 
@@ -24,7 +24,13 @@ A citizen in Visakhapatnam has **eight** disconnected ways to report a need — 
 | 6 | Citizen-verified closure | Official claims "done" → citizen denies in chat → publicly reopens. Citizens are the closing authority |
 | 7 | Attack absorbed | Simulated fake-report flood → coordination detector quarantines it → public map untouched |
 
-<!-- TODO: GIF per moment -->
+````carousel
+![Evidence Weighed Decisions & Rally Points](/public/screenshots/rally-point.png)
+<!-- slide -->
+![Operator Review & Duplicate Validation Queues](/public/screenshots/review.png)
+<!-- slide -->
+![Virtual Governance System Vision Canvas](/public/screenshots/vision.png)
+````
 
 ## Try it in 2 minutes
 

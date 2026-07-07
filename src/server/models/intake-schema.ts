@@ -15,6 +15,7 @@ export const extractionSchema = z
     summaryEn: z.string().max(200),
     summaryTe: z.string().max(200).optional(),
     confidence: z.number().min(0).max(1),
+    asrConfidence: z.number().min(0).max(1).optional(),
   })
   .strict();
 

@@ -121,3 +121,62 @@ export async function simulateAttack(): Promise<boolean> {
     return false;
   }
 }
+
+export async function fetchRoutingQueue(): Promise<any[]> {
+  try {
+    const res = await fetch("/api/review/routing");
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.items ?? []);
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchTranscriptionQueue(): Promise<any[]> {
+  try {
+    const res = await fetch("/api/review/transcription");
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.items ?? []);
+  } catch {
+    return [];
+  }
+}
+
+export async function routeApprove(demandId: string, authorityId: number): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/demands/${demandId}/route-approve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ authorityId, actorId: "reviewer" }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function transcribeSubmission(submissionId: string, text: string): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/submissions/${submissionId}/transcribe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, actorId: "reviewer" }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function fetchStaleAuthorities(): Promise<any[]> {
+  try {
+    const res = await fetch("/api/review/stale-authorities");
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.items ?? []);
+  } catch {
+    return [];
+  }
+}

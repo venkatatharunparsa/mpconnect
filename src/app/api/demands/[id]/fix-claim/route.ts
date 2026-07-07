@@ -7,6 +7,7 @@ import { CONFIG } from "@/server/core/config";
 import { appendEvent } from "@/server/services/lifecycle/events";
 import { transition } from "@/server/services/lifecycle/lifecycle";
 import type { DemandState } from "@/server/services/lifecycle/lifecycle";
+import { notifyCitizen } from "@/server/services/notifications/notify";
 
 const bodySchema = z
   .object({
@@ -83,6 +84,12 @@ export async function POST(
         .values({ demandId: params.id, citizenKey: r.citizenKey })
         .returning();
       createdVerifications.push(v);
+      
+      // Notify citizen of the verification request
+      await notifyCitizen(r.citizenKey, "fix_claimed", {
+        demandTitle: demand.title,
+        verificationId: v.id,
+      });
     }
 
     return jsonOk({

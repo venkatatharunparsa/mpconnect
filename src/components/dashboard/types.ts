@@ -40,6 +40,7 @@ export interface Demand {
   verifiedResolved?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  isEscalated?: boolean;
 }
 
 export interface WardGeoJson {
