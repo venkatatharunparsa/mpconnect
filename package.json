@@ -12,9 +12,12 @@
     "db:studio": "drizzle-kit studio",
     "seed": "tsx seed/load.ts",
     "demo:reset": "tsx seed/load.ts --reset",
+    "eval:extraction": "tsx scripts/eval-extraction.ts",
+    "telegram:webhook": "tsx scripts/set-telegram-webhook.ts",
     "test": "vitest run"
   },
   "dependencies": {
+    "@google/genai": "^2.10.0",
     "@google/generative-ai": "^0.21.0",
     "@vis.gl/react-google-maps": "^1.4.0",
     "drizzle-orm": "^0.36.0",

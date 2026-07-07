@@ -1,0 +1,257 @@
+[
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-001",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-002",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-003",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-004",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-005",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-006",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-007",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-008",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-009",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-010",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-011",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-012",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-013",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-014",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  },
+  {
+    "channel": "web",
+    "citizenKey": "SYN-ATK-015",
+    "rawText": "Fake coordination report: massive garbage pile and bad smell in MVP sector 2.",
+    "lang": "en",
+    "extraction": {
+      "kind": "grievance",
+      "category": "garbage",
+      "locationText": "MVP Colony Sector 2",
+      "lat": 17.745,
+      "lng": 83.333,
+      "ward": "mvp",
+      "urgency": "medium",
+      "summaryEn": "Fake coordination report: garbage in MVP Colony Sector 2",
+      "confidence": 0.95
+    }
+  }
+]
