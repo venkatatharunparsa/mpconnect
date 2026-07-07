@@ -2,13 +2,13 @@ import { NextRequest } from "next/server";
 import { and, count, eq, gte } from "drizzle-orm";
 import { db } from "@/server/db";
 import { submissions } from "@/server/db/schema";
-import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/api-helpers";
-import { CONFIG } from "@/server/config";
-import { appendEvent } from "@/server/services/events";
-import { intakeSchema } from "@/server/services/intake-schema";
-import { generateRefId } from "@/server/services/refid";
-import { triggerMergeProcessing } from "@/server/services/merge-hook";
-import { withTracing, getTraceId } from "@/server/utils/logger";
+import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/intake/api-helpers";
+import { CONFIG } from "@/server/core/config";
+import { appendEvent } from "@/server/services/lifecycle/events";
+import { intakeSchema } from "@/server/models/intake-schema";
+import { generateRefId } from "@/server/services/intake/refid";
+import { triggerMergeProcessing } from "@/server/services/engine/merge-hook";
+import { withTracing, getTraceId } from "@/server/core/logger";
 
 /** Count submissions by citizenKey in the last 24 hours. */
 async function countRecentSubmissions(citizenKey: string): Promise<number> {

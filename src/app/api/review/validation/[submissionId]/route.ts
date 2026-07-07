@@ -2,9 +2,9 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import { submissions } from "@/server/db/schema";
-import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/api-helpers";
-import { appendEvent } from "@/server/services/events";
-import { triggerMergeProcessing } from "@/server/services/merge-hook";
+import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/intake/api-helpers";
+import { appendEvent } from "@/server/services/lifecycle/events";
+import { triggerMergeProcessing } from "@/server/services/engine/merge-hook";
 
 const bodySchema = z
   .object({

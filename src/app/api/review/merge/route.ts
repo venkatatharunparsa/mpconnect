@@ -1,5 +1,5 @@
-import { jsonOk, handleApiError } from "@/server/services/api-helpers";
-import { fetchMergeReviewQueue } from "@/server/services/review-queues";
+import { jsonOk, handleApiError } from "@/server/services/intake/api-helpers";
+import { fetchMergeReviewQueue } from "@/server/repositories/review-queues";
 
 export async function GET() {
   try {

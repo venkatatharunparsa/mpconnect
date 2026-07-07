@@ -1,7 +1,7 @@
 "use server";
 
 import { runExtraction, submitExtracted } from "@/server/actions/submit";
-import type { GeminiExtraction } from "@/server/services/gemini";
+import type { GeminiExtraction } from "@/server/clients/gemini";
 
 export async function extractVoiceTranscript(text: string) {
   return runExtraction({ text });

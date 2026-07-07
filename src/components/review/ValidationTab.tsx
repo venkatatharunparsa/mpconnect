@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TAXONOMY } from "@/server/taxonomy";
+import { TAXONOMY } from "@/server/core/taxonomy";
 import { approveValidation, rejectValidation } from "./api";
 import { REJECT_REASONS, type ValidationItem } from "./types";
 
@@ -179,7 +179,7 @@ export function ValidationTab({ items, loading, onRemove, onError }: ValidationT
                     onChange={(e) => setCategory((s) => ({ ...s, [item.id]: e.target.value }))}
                   >
                     <option value="">—</option>
-                    {TAXONOMY.map((c) => (
+                    {TAXONOMY.map((c: any) => (
                       <option key={c.code} value={c.code}>
                         {c.nameEn}
                       </option>

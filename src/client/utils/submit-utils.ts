@@ -1,4 +1,4 @@
-import type { GeminiExtraction } from "@/server/services/gemini";
+import type { GeminiExtraction } from "@/server/clients/gemini";
 
 /** Low location confidence or missing location → one clarifying question. */
 export function needsLocationClarify(extraction: GeminiExtraction): boolean {

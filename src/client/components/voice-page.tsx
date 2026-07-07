@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { extractVoiceTranscript, submitVoiceSubmission } from "@/server/actions/voice";
-import type { GeminiExtraction } from "@/server/services/gemini";
+import type { GeminiExtraction } from "@/server/clients/gemini";
 
 type CallPhase = "idle" | "calling" | "active" | "confirming" | "done";
 type CallMode = "live" | "push";

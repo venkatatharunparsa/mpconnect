@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { CONFIG } from "../src/server/config";
+import { CONFIG } from "../src/server/core/config";
 
 const OUTPUT_PATH = path.join(__dirname, "..", "docs", "ranking-methodology.md");
 

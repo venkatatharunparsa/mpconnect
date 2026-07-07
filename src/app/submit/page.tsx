@@ -1,3 +1,5 @@
 import SubmitPage from "@/client/components/submit-page";
 
-export default SubmitPage;
+export default function Page() {
+  return <SubmitPage />;
+}

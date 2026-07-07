@@ -1,7 +1,7 @@
 "use server";
 
-import { extractSubmission, type ExtractSubmissionInput, type GeminiExtraction } from "@/server/services/gemini";
-import type { IntakeBody } from "@/server/services/intake-schema";
+import { extractSubmission, type ExtractSubmissionInput, type GeminiExtraction } from "@/server/clients/gemini";
+import type { IntakeBody } from "@/server/models/intake-schema";
 
 function apiBase(): string {
   if (process.env.PUBLIC_URL) return process.env.PUBLIC_URL.replace(/\/$/, "");

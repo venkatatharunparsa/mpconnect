@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import { demands, submissions } from "@/server/db/schema";
-import { jsonOk, jsonError, handleApiError } from "@/server/services/api-helpers";
-import { demandTimeline } from "@/server/services/events";
-import { isValidRefIdFormat } from "@/server/services/refid";
+import { jsonOk, jsonError, handleApiError } from "@/server/services/intake/api-helpers";
+import { demandTimeline } from "@/server/services/lifecycle/events";
+import { isValidRefIdFormat } from "@/server/services/intake/refid";
 
 export async function GET(
   _req: Request,

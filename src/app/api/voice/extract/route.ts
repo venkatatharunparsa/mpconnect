@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { extractSubmission } from "@/server/services/gemini";
-import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/api-helpers";
+import { extractSubmission } from "@/server/clients/gemini";
+import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/intake/api-helpers";
 import { z } from "zod";
 
 const bodySchema = z

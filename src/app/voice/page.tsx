@@ -1,3 +1,5 @@
 import VoicePage from "@/client/components/voice-page";
 
-export default VoicePage;
+export default function Page() {
+  return <VoicePage />;
+}
