@@ -17,6 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@google/genai": "^2.10.0",
     "@google/generative-ai": "^0.21.0",
     "@vis.gl/react-google-maps": "^1.4.0",
     "drizzle-orm": "^0.36.0",
