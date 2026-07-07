@@ -31,7 +31,7 @@ type PendingLocation = {
 };
 
 const CITIZEN_KEY_STORAGE = "mpconnect_citizen_key";
-const SAFETY_SHOWN_KEY = "mpconnect_safety_shown";
+const SAFETY_PREFIX = "mpconnect_safety_";
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -86,9 +86,9 @@ export default function SubmitPage() {
     const key = getCitizenKey();
     setCitizenKey(key);
 
-    if (!localStorage.getItem(SAFETY_SHOWN_KEY)) {
+    if (!localStorage.getItem(`${SAFETY_PREFIX}${key}`)) {
       addBot(t("te", "safetyNotice"), { kind: "safety" });
-      localStorage.setItem(SAFETY_SHOWN_KEY, "1");
+      localStorage.setItem(`${SAFETY_PREFIX}${key}`, "1");
     }
   }, [addBot]);
 
