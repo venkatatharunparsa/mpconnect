@@ -41,6 +41,11 @@ export type ExtractSubmissionResult =
   | { needsHuman: true; raw: unknown }
   | { needsHuman: false; extraction: GeminiExtraction };
 
+function isMockKey(): boolean {
+  const key = process.env.GEMINI_API_KEY;
+  return !key || key.startsWith("mock") || key === "";
+}
+
 function getGenAI(): GoogleGenerativeAI {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY is not set");
@@ -128,6 +133,33 @@ export async function extractSubmission(
     return { needsHuman: true, raw: { error: "no input provided" } };
   }
 
+  if (isMockKey()) {
+    // Basic mock heuristic extraction from text
+    const text = input.text || "";
+    const lower = text.toLowerCase();
+    
+    let category = "other";
+    if (lower.includes("school") || lower.includes("పాఠశాల")) category = "school_upgrade";
+    else if (lower.includes("drain") || lower.includes("డ్రైన్") || lower.includes("కాలువ")) category = "drainage";
+    else if (lower.includes("light") || lower.includes("దీపాలు")) category = "streetlights";
+    else if (lower.includes("garbage") || lower.includes("చెత్త")) category = "garbage";
+    else if (lower.includes("water") || lower.includes("నీటి")) category = "water_supply";
+    else if (lower.includes("danger") || lower.includes("wire") || lower.includes("విద్యుత్")) category = "safety_hazard";
+    else if (lower.includes("vocal") || lower.includes("skill")) category = "vocational_training";
+
+    const extraction: GeminiExtraction = {
+      kind: lower.includes("need") || lower.includes("want") || lower.includes("establish") ? "suggestion" : "grievance",
+      category: category as any,
+      locationText: "Extracted area",
+      urgency: lower.includes("dangerous") || lower.includes("safety") || lower.includes("high") ? "safety" : "medium",
+      summaryEn: text.slice(0, 100) || "Mock summary",
+      summaryTe: "నమూనా సారాంశం",
+      lang: "en",
+      confidence: 0.9,
+    };
+    return { needsHuman: false, extraction };
+  }
+
   let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -145,6 +177,21 @@ export async function extractSubmission(
 
 /** Gemini text embedding for merge engine (Person C). */
 export async function embedText(text: string): Promise<number[]> {
+  if (isMockKey()) {
+    const vec = new Array(768).fill(0);
+    const cleaned = text.toLowerCase().replace(/[^a-z0-9]/g, "");
+    for (let i = 0; i < cleaned.length; i++) {
+      vec[i % 768] += cleaned.charCodeAt(i) / 120.0;
+    }
+    // Add a default small bias to ensure it's not all zeros
+    for (let i = 0; i < 768; i++) {
+      vec[i] += Math.sin(i) * 0.01;
+    }
+    // Normalize the vector
+    const mag = Math.sqrt(vec.reduce((sum, v) => sum + v * v, 0)) || 1;
+    return vec.map((v) => v / mag);
+  }
+
   const genAI = getGenAI();
   const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
   const result = await model.embedContent(text);
@@ -155,6 +202,10 @@ export async function embedText(text: string): Promise<number[]> {
 
 /** Evidence-panel narrator — numbers in the input JSON are the only permitted facts. */
 export async function narrateComparison(numbers: Record<string, unknown>): Promise<string> {
+  if (isMockKey()) {
+    return `Mock comparison narrative based on the provided stats: ${JSON.stringify(numbers)}.`;
+  }
+
   const genAI = getGenAI();
   const model = genAI.getGenerativeModel({
     model: EXTRACTION_MODEL,
