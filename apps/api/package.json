@@ -12,6 +12,8 @@
     "db:studio": "drizzle-kit studio",
     "db:reset": "tsx src/server/db/reset.ts",
     "seed": "tsx seed/load.ts",
+    "seed:demo": "tsx seed/demo-user-complaints.ts",
+    "seed:production": "tsx seed/setup-production.ts",
     "demo:reset": "tsx seed/load.ts --reset",
     "eval:extraction": "tsx scripts/eval-extraction.ts",
     "telegram:webhook": "tsx scripts/set-telegram-webhook.ts",

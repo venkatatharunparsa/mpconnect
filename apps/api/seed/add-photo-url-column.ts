@@ -6,7 +6,7 @@ async function main() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) throw new Error("DATABASE_URL is not set");
 
-  const sql = postgres(connectionString, { prepare: false });
+  const sql = postgres(connectionString, { prepare: false, ssl: "require" });
   try {
     await sql`ALTER TABLE demands ADD COLUMN IF NOT EXISTS photo_url text`;
     console.log("Ensured demands.photo_url column exists.");
