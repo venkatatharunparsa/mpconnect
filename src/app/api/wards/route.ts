@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import { wards } from "@/server/db/schema";
-import { jsonOk, handleApiError } from "@/server/services/api-helpers";
+import { jsonOk, handleApiError } from "@/server/services/intake/api-helpers";
 
 export async function GET() {
   try {

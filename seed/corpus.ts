@@ -9,7 +9,7 @@ import { count, eq, like } from "drizzle-orm";
 import { createHash } from "crypto";
 import * as fs from "fs";
 import * as path from "path";
-import { processSubmission } from "../src/server/services/merge";
+import { processSubmission } from "../src/server/services/engine/merge";
 
 const GENESIS = "mpconnect-genesis-2026";
 

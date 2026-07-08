@@ -1,5 +1,5 @@
-import { jsonOk, handleApiError } from "@/server/services/api-helpers";
-import { processVerificationTimeouts } from "@/server/services/verification-timeout";
+import { jsonOk, handleApiError } from "@/server/services/intake/api-helpers";
+import { processVerificationTimeouts } from "@/server/services/lifecycle/verification-timeout";
 
 export async function GET() {
   try {

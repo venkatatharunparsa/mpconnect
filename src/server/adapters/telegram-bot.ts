@@ -1,5 +1,5 @@
 import { Bot } from "grammy";
-import { extractSubmission } from "@/server/services/gemini";
+import { extractSubmission } from "@/server/clients/gemini";
 import {
   apiBase,
   markVerificationPrompted,

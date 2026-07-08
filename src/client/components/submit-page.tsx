@@ -5,7 +5,7 @@ import { runExtraction, submitExtracted } from "@/server/actions/submit";
 import { t, type Lang } from "../i18n";
 import { useVerificationPoll } from "../hooks/use-verifications";
 import { formatStatusLines, needsLocationClarify } from "../utils/submit-utils";
-import type { GeminiExtraction } from "@/server/services/gemini";
+import type { GeminiExtraction } from "@/server/clients/gemini";
 import { isValidRefIdFormat } from "@/server/refid-format";
 
 type Msg = {

@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import { demands } from "@/server/db/schema";
-import { jsonOk, jsonError, handleApiError } from "@/server/services/api-helpers";
-import { withTracing } from "@/server/utils/logger";
+import { jsonOk, jsonError, handleApiError } from "@/server/services/intake/api-helpers";
+import { withTracing } from "@/server/core/logger";
 
 /** Delegates to Person C's evidence.ts when available. */
 export async function GET(
@@ -15,7 +15,7 @@ export async function GET(
       if (!demand) return jsonError("Demand not found", 404);
 
       try {
-        const mod = await import("@/server/services/evidence");
+        const mod = await import("@/server/services/decisions/evidence");
         if (typeof mod.evidenceFor === "function") {
           const evidence = await mod.evidenceFor(params.id);
           return jsonOk(evidence);
