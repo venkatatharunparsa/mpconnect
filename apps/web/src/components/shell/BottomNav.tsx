@@ -33,7 +33,6 @@ function navForRole(role: ReturnType<typeof useApp>["role"]): NavItem[] {
     return [
       { href: "/authority", labelKey: "dashboard", icon: IconStats },
       { href: "/authority/workspace", labelKey: "workspace", icon: IconHome },
-      { href: "/authority/issues", labelKey: "issues", icon: IconMic },
       { href: "/authority/map", labelKey: "map", icon: IconMap },
       { href: "/authority/profile", labelKey: "profile", icon: IconUser },
     ];

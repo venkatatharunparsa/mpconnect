@@ -115,7 +115,7 @@ export function ProfileView({ role }: { role: AppRole }) {
       return [
         { href: "/authority", label: "Dashboard", hint: "Your office overview" },
         { href: "/authority/workspace", label: "Workspace", hint: "Allotted issues & actions" },
-        { href: "/authority/issues", label: "Public issues", hint: "Constituency feed (view only)" },
+        { href: "/authority/map", label: "Map", hint: "Issues in your patch" },
         { href: "/authority/pick", label: "Switch department", hint: "Log in as a different office" },
       ];
     }

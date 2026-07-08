@@ -1,18 +1,5 @@
-import { Suspense } from "react";
-import { RoleGate } from "@/components/role/RoleGate";
-import { DashboardProvider } from "@/components/dashboard/DashboardContext";
-import { DashboardView } from "@/components/dashboard/DashboardView";
-import { MapSkeleton } from "@/components/dashboard/LoadingSkeleton";
+import { redirect } from "next/navigation";
 
-export default function AuthorityIssues() {
-  return (
-    <RoleGate role="official">
-      <Suspense fallback={<MapSkeleton />}>
-        <DashboardProvider>
-          <DashboardView variant="issues" />
-        </DashboardProvider>
-      </Suspense>
-    </RoleGate>
-  );
+export default function AuthorityIssuesRedirect() {
+  redirect("/authority/workspace");
 }
-
