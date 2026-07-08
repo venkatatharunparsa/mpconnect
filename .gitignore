@@ -11,3 +11,5 @@ next-env.d.ts
 .vercel
 drizzle/meta
 coverage/
+docs/env-production-api.env
+docs/env-production-web.env
