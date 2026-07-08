@@ -1,9 +1,7 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
-// Load local env file if present
+// Dependency-free environment variables loader for seed scripts
 const envLocalPath = join(process.cwd(), ".env.local");
 if (existsSync(envLocalPath)) {
   const envContent = readFileSync(envLocalPath, "utf-8");
@@ -14,12 +12,3 @@ if (existsSync(envLocalPath)) {
     }
   }
 }
-
-import * as schema from "./schema";
-
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error("DATABASE_URL is not set (see .env.example)");
-
-const client = postgres(connectionString, { prepare: false });
-export const db = drizzle(client, { schema });
-

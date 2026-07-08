@@ -1,5 +1,4 @@
-import { loadEnvConfig } from "@next/env";
-loadEnvConfig(process.cwd());
+import "./load-env";
 
 import { db } from "../src/server/db";
 import { count } from "drizzle-orm";

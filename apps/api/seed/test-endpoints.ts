@@ -1,5 +1,4 @@
-import { loadEnvConfig } from "@next/env";
-loadEnvConfig(process.cwd());
+import "./load-env";
 
 import { GET as getEvidence } from "../src/app/api/demands/[id]/evidence/route";
 import { GET as getMplads } from "../src/app/api/demands/[id]/mplads-pack/route";

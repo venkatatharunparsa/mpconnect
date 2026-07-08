@@ -1,5 +1,4 @@
-import { loadEnvConfig } from "@next/env";
-loadEnvConfig(process.cwd());
+import "./load-env";
 
 import { POST } from "../src/app/api/submissions/route";
 import { NextRequest } from "next/server";
