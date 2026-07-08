@@ -1,7 +1,11 @@
 import Link from "next/link";
 
 export default function ApiHomePage() {
-  const webUrl = process.env.NEXT_PUBLIC_WEB_URL ?? "http://localhost:3001";
+  const webUrl = (
+    process.env.NEXT_PUBLIC_WEB_URL ?? 
+    process.env.CORS_ORIGINS?.split(",")[0]?.trim() ?? 
+    "http://localhost:3001"
+  ).replace(/\/$/, "");
 
   return (
     <div className="py-16 text-center">
