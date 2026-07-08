@@ -20,7 +20,7 @@ export const extractionSchema = z
 
 export const intakeSchema = z
   .object({
-    channel: z.enum(["web", "telegram", "voice"]),
+    channel: z.enum(["web", "telegram", "voice", "news", "sms"]),
     citizenKey: z.string().min(1),
     rawText: z.string().optional(),
     mediaUrl: z.string().optional(),

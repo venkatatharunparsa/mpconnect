@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import { demands } from "@/server/db/schema";
-import { eq, and, ne } from "drizzle-orm";
+import { eq, and, ne, notInArray } from "drizzle-orm";
 
 export async function getDemandById(id: string) {
   const [demand] = await db.select().from(demands).where(eq(demands.id, id)).limit(1);
@@ -25,4 +25,11 @@ export async function getDemandsByWardExcept(ward: string, exceptId: string) {
     .select()
     .from(demands)
     .where(and(eq(demands.ward, ward), ne(demands.id, exceptId)));
+}
+
+export async function getUnresolvedDemands() {
+  return db
+    .select()
+    .from(demands)
+    .where(notInArray(demands.state, ["resolved_verified", "resolved_unverified"]));
 }
