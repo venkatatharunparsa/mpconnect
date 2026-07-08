@@ -11,36 +11,56 @@ function dashboardHref(role: AppRole): string {
   return "/mp";
 }
 
-const ROLE_CARDS: {
-  role: AppRole;
-  title: string;
-  subtitle: string;
-  emoji: string;
-}[] = [
-  {
-    role: "mp",
-    title: "Login as MP",
-    subtitle: "Constituency command view with ranked public priorities.",
-    emoji: "🏛️",
+const t = {
+  en: {
+    title: "Choose your role",
+    subtitle: "This demo skips password login. Pick a role to open the correct dashboard flow.",
+    mpTitle: "Login as MP",
+    mpSub: "Constituency command view with ranked public priorities.",
+    authTitle: "Login as Authority",
+    authSub: "Execution workspace for assigned issues and updates.",
+    userTitle: "Login as User",
+    userSub: "Report a problem, track status, and support public demands.",
   },
-  {
-    role: "official",
-    title: "Login as Authority",
-    subtitle: "Execution workspace for assigned issues and updates.",
-    emoji: "🗂️",
-  },
-  {
-    role: "citizen",
-    title: "Login as User",
-    subtitle: "Report a problem, track status, and support public demands.",
-    emoji: "🎙️",
-  },
-];
+  te: {
+    title: "మీ పాత్రను ఎంచుకోండి",
+    subtitle: "ఈ డెమో పాస్‌వర్డ్ లాగిన్‌ను దాటవేస్తుంది. సరైన డాష్‌బోర్డ్ ఫ్లోను తెరవడానికి ఒక పాత్రను ఎంచుకోండి.",
+    mpTitle: "MP గా లాగిన్ అవ్వండి",
+    mpSub: "ర్యాంక్ చేయబడిన ప్రజల ప్రాధాన్యతలతో నియోజకవర్గ కమాండ్ వ్యూ.",
+    authTitle: "అధికారిగా లాగిన్ అవ్వండి",
+    authSub: "కేటాయించిన సమస్యలు మరియు నవీకరణల కోసం వర్క్‌స్పేస్.",
+    userTitle: "వినియోగదారుడిగా లాగిన్ అవ్వండి",
+    userSub: "సమస్యను నివేదించండి, స్థితిని ట్రాక్ చేయండి మరియు ప్రజల డిమాండ్లకు మద్దతు ఇవ్వండి.",
+  }
+};
 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { role, setRole } = useApp();
+  const { role, setRole, locale } = useApp();
+  const isTe = locale === "te";
+  const translations = isTe ? t.te : t.en;
+
+  const roleCards = [
+    {
+      role: "mp" as AppRole,
+      title: translations.mpTitle,
+      subtitle: translations.mpSub,
+      emoji: "🏛️",
+    },
+    {
+      role: "official" as AppRole,
+      title: translations.authTitle,
+      subtitle: translations.authSub,
+      emoji: "🗂️",
+    },
+    {
+      role: "citizen" as AppRole,
+      title: translations.userTitle,
+      subtitle: translations.userSub,
+      emoji: "🎙️",
+    },
+  ];
 
   useEffect(() => {
     if (searchParams.get("pick") === "1") return;
@@ -59,16 +79,16 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-widest text-primary/70">
               MPconnect
             </p>
-            <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">Choose your role</h1>
+            <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{translations.title}</h1>
           </div>
           <LangToggleLight />
         </div>
         <p className="mb-5 text-sm text-slate-600">
-          This demo skips password login. Pick a role to open the correct dashboard flow.
+          {translations.subtitle}
         </p>
 
         <div className="space-y-3">
-          {ROLE_CARDS.map((item) => (
+          {roleCards.map((item) => (
             <button
               key={item.role}
               type="button"
