@@ -100,7 +100,11 @@ async function fetchChainStatus(demandId: string): Promise<ChainVerification | n
 
 function ChainBadge({ status, brokenAt }: { status: ChainStatus; brokenAt?: number }) {
   if (status === "loading") {
-    return <div className="mb-4 h-8 animate-pulse rounded-lg bg-slate-100" />;
+    return (
+      <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+        Verifying chain integrity...
+      </div>
+    );
   }
   if (status === "unavailable") {
     return (
@@ -118,7 +122,7 @@ function ChainBadge({ status, brokenAt }: { status: ChainStatus; brokenAt?: numb
   }
   return (
     <div className="mb-4 rounded-lg border border-state-resolved bg-green-50 px-3 py-2 text-sm font-semibold text-state-resolved">
-      Chain verified âœ“
+      Chain verified ✓
     </div>
   );
 }
@@ -134,7 +138,7 @@ function VerificationOutcome({ event }: { event: TimelineEvent }) {
       }`}
     >
       <div className={`text-5xl ${confirmed ? "text-state-resolved" : "text-state-reopened"}`}>
-        {confirmed ? "âœ“" : "ðŸš©"}
+        {confirmed ? "✓" : "⚠"}
       </div>
       <p
         className={`mt-2 text-lg font-bold ${
@@ -142,8 +146,8 @@ function VerificationOutcome({ event }: { event: TimelineEvent }) {
         }`}
       >
         {confirmed
-          ? "Citizen verified â€” fix confirmed"
-          : "Citizen denied closure â€” publicly reopened"}
+          ? "Citizen verified - fix confirmed"
+          : "Citizen denied closure - publicly reopened"}
       </p>
       <p className="mt-1 text-sm text-slate-600">{eventLabel(event.eventType)}</p>
       {typeof event.payload.note === "string" && (
@@ -162,7 +166,7 @@ function StateChangeEvent({ event }: { event: TimelineEvent }) {
       <p className="text-xs font-medium uppercase tracking-wide text-slate-500">State change</p>
       <div className="mt-1 flex flex-wrap items-center gap-2 text-sm font-semibold">
         <span className="rounded bg-slate-100 px-2 py-0.5 capitalize">{from.replace(/_/g, " ")}</span>
-        <span className="text-slate-400">â†’</span>
+        <span className="text-slate-400">→</span>
         <span className="rounded bg-primary/10 px-2 py-0.5 capitalize text-primary">
           {to.replace(/_/g, " ")}
         </span>
@@ -188,7 +192,7 @@ function CitizenSubmissionEvent({
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
       <p className="text-sm font-medium text-slate-800">
-        {formatActor(event, publicSafe)} â€” {eventLabel(event.eventType)}
+        {formatActor(event, publicSafe)} - {eventLabel(event.eventType)}
       </p>
       {summary && <p className="mt-1 text-sm text-slate-600">{summary}</p>}
       <div className="mt-2 flex flex-wrap gap-2">
@@ -215,13 +219,13 @@ function HumanDecisionEvent({ event, publicSafe }: { event: TimelineEvent; publi
   return (
     <div className="border-l-4 border-primary py-1 pl-3">
       <p className="text-sm font-bold text-slate-900">
-        {formatActor(event, publicSafe)} â€” {eventLabel(event.eventType)}
+        {formatActor(event, publicSafe)} - {eventLabel(event.eventType)}
       </p>
       {typeof event.payload.note === "string" && (
         <p className="mt-1 text-sm text-slate-700">{event.payload.note}</p>
       )}
       {typeof event.payload.authorityName === "string" && (
-        <p className="mt-1 text-sm text-slate-600">â†’ {event.payload.authorityName}</p>
+        <p className="mt-1 text-sm text-slate-600">→ {event.payload.authorityName}</p>
       )}
       <time className="mt-1 block text-xs text-slate-500">{formatTime(event.occurredAt)}</time>
     </div>
@@ -264,6 +268,7 @@ function EventNode({ event, publicSafe }: { event: TimelineEvent; publicSafe: bo
 export function Timeline({ demandId, events: eventsProp, publicSafe = false }: TimelineProps) {
   const [events, setEvents] = useState<TimelineEvent[]>(eventsProp ?? []);
   const [loading, setLoading] = useState(!eventsProp);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [chainStatus, setChainStatus] = useState<ChainStatus>("loading");
   const [brokenAt, setBrokenAt] = useState<number | undefined>();
 
@@ -276,15 +281,27 @@ export function Timeline({ demandId, events: eventsProp, publicSafe = false }: T
     let cancelled = false;
     (async () => {
       setLoading(true);
+      setLoadError(null);
       // TODO: confirm shape with A â€” timeline may come from GET /api/demands/[id]
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 8000);
       try {
-        const res = await apiFetch(`/api/demands/${demandId}`);
+        const res = await apiFetch(`/api/demands/${demandId}`, { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
           const list: TimelineEvent[] = data.timeline ?? data.events ?? [];
           if (!cancelled) setEvents(list);
+        } else if (!cancelled) {
+          setEvents([]);
+          setLoadError("Timeline details are not available yet.");
+        }
+      } catch {
+        if (!cancelled) {
+          setEvents([]);
+          setLoadError("Timeline request timed out. Please refresh and retry.");
         }
       } finally {
+        window.clearTimeout(timeout);
         if (!cancelled) setLoading(false);
       }
     })();
@@ -315,7 +332,7 @@ export function Timeline({ demandId, events: eventsProp, publicSafe = false }: T
     };
   }, [demandId]);
 
-  // Oldest-first: read the story as it unfolded (genesis â†’ present).
+  // Oldest-first: read the story as it unfolded (genesis -> present).
   const sorted = [...events].sort(
     (a, b) => new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime(),
   );
@@ -327,6 +344,17 @@ export function Timeline({ demandId, events: eventsProp, publicSafe = false }: T
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-16 animate-pulse rounded-lg bg-slate-100" />
         ))}
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div>
+        <ChainBadge status={chainStatus} brokenAt={brokenAt} />
+        <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+          {loadError}
+        </div>
       </div>
     );
   }

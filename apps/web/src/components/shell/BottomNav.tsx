@@ -6,27 +6,60 @@ import { useApp } from "./AppProvider";
 import { IconHome, IconMap, IconMic, IconStats, IconUser } from "./icons";
 import { shellT } from "./labels";
 
-/** Citizen-first flow: Home → Map → Report → Priorities → About */
-const NAV = [
-  { href: "/", labelKey: "home" as const, icon: IconHome },
-  { href: "/map", labelKey: "map" as const, icon: IconMap },
-  { href: "/submit", labelKey: "reportIssue" as const, icon: IconMic, fab: true },
-  { href: "/dashboard", labelKey: "priorities" as const, icon: IconStats },
-  { href: "/vision", labelKey: "visionShort" as const, icon: IconUser },
-];
+type NavItem = {
+  href: string;
+  labelKey:
+    | "dashboard"
+    | "issues"
+    | "register"
+    | "map"
+    | "profile"
+    | "workspace"
+    | "reportIssue";
+  icon: typeof IconHome;
+  fab?: boolean;
+};
+
+function navForRole(role: ReturnType<typeof useApp>["role"]): NavItem[] {
+  if (role === "mp") {
+    return [
+      { href: "/mp", labelKey: "issues", icon: IconHome },
+      { href: "/mp/issues", labelKey: "dashboard", icon: IconStats },
+      { href: "/mp/map", labelKey: "map", icon: IconMap },
+      { href: "/mp/profile", labelKey: "profile", icon: IconUser },
+    ];
+  }
+  if (role === "official") {
+    return [
+      { href: "/authority", labelKey: "issues", icon: IconHome },
+      { href: "/authority/workspace", labelKey: "workspace", icon: IconHome },
+      { href: "/authority/issues", labelKey: "dashboard", icon: IconMic },
+      { href: "/authority/map", labelKey: "map", icon: IconMap },
+      { href: "/authority/profile", labelKey: "profile", icon: IconUser },
+    ];
+  }
+  return [
+    { href: "/user", labelKey: "issues", icon: IconHome },
+    { href: "/user/issues", labelKey: "dashboard", icon: IconStats },
+    { href: "/user/register", labelKey: "register", icon: IconMic, fab: true },
+    { href: "/user/map", labelKey: "map", icon: IconMap },
+    { href: "/user/profile", labelKey: "profile", icon: IconUser },
+  ];
+}
 
 function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  if (href === "/dashboard") return pathname.startsWith("/dashboard");
-  if (href === "/map") return pathname.startsWith("/map");
+  if (href === "/mp" || href === "/user" || href === "/authority") {
+    return pathname === href;
+  }
   return pathname.startsWith(href);
 }
 
 export function BottomNav() {
   const pathname = usePathname() ?? "/";
-  const { locale } = useApp();
+  const { locale, role } = useApp();
+  const nav = navForRole(role);
 
-  if (pathname.startsWith("/review") || pathname.startsWith("/docs")) return null;
+  if (pathname === "/" || pathname.startsWith("/docs")) return null;
 
   return (
     <nav
@@ -37,7 +70,7 @@ export function BottomNav() {
         className="mx-auto flex h-16 max-w-lg items-end justify-around px-2 pb-2 sm:max-w-none sm:px-6"
         style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
       >
-        {NAV.map((item) => {
+        {nav.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = item.icon;
 

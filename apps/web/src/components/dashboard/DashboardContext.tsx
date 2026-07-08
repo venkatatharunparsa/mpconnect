@@ -26,10 +26,14 @@ const DashboardContext = createContext<DashboardContextValue | null>(null);
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { locale, setLocale } = useApp();
+  const { locale, setLocale, role: appRole, setRole: setAppRole } = useApp();
   const roleParam = searchParams.get("role");
   const initialRole: DemoRole =
-    roleParam === "official" || roleParam === "mp" ? roleParam : "citizen";
+    roleParam === "official" || roleParam === "mp"
+      ? roleParam
+      : appRole === "official" || appRole === "mp"
+        ? appRole
+        : "citizen";
 
   const [role, setRoleState] = useState<DemoRole>(initialRole);
   const [selectedDemandId, setSelectedDemandId] = useState<string | null>(null);
@@ -37,13 +41,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const setRole = useCallback(
     (next: DemoRole) => {
       setRoleState(next);
-      const params = new URLSearchParams(searchParams.toString());
-      if (next === "citizen") params.delete("role");
-      else params.set("role", next);
-      const qs = params.toString();
-      router.replace(qs ? `/dashboard?${qs}` : "/dashboard", { scroll: false });
+      setAppRole(next);
+      const root =
+        next === "citizen" ? "/user" : next === "official" ? "/authority" : "/mp";
+      router.replace(root, { scroll: false });
     },
-    [router, searchParams],
+    [router, setAppRole],
   );
 
   const value = useMemo(

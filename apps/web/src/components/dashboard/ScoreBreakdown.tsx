@@ -36,12 +36,15 @@ export function ScoreBreakdown({ score, breakdown, locale }: ScoreBreakdownProps
     : [];
 
   return (
-    <div className="relative">
-      <button
-        type="button"
-        className="w-full text-left"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        className="w-full text-left cursor-pointer"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
       >
@@ -55,7 +58,7 @@ export function ScoreBreakdown({ score, breakdown, locale }: ScoreBreakdownProps
             style={{ width: `${pct}%` }}
           />
         </div>
-      </button>
+      </div>
       {open && (
         <div className="absolute right-0 top-full z-20 mt-1 w-56 rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg">
           <div className="mb-2 font-semibold text-slate-800">{t("scoreBreakdown", locale)}</div>

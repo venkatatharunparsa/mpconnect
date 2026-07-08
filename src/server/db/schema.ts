@@ -59,6 +59,7 @@ export const demands = pgTable("demands", {
   lat: real("lat"),
   lng: real("lng"),
   affectedCount: integer("affected_count").default(1).notNull(), // distinct citizenKeys
+  photoUrl: text("photo_url"), // representative image for the issue feed (from a submission)
   urgency: text("urgency").default("medium").notNull(),
   state: text("state").default("claimed").notNull(),
   // claimed -> validated_public -> routed -> in_progress -> fix_claimed -> resolved_verified | reopened | resolved_unverified

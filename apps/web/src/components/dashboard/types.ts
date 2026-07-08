@@ -28,6 +28,7 @@ export interface Demand {
   category: string;
   kind: string;
   ward: string | null;
+  photoUrl?: string | null;
   lat: number | null;
   lng: number | null;
   affectedCount: number;

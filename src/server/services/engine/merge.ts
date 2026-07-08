@@ -162,6 +162,12 @@ export async function processSubmission(submissionId: string): Promise<void> {
       updatedAt: new Date(),
     };
 
+    // If we ever have an attached photo, carry it forward to the master demand.
+    // (Used by the Issues feed thumbnails.)
+    if ((bestDemand as any).photoUrl == null && sub.mediaUrl) {
+      updateFields.photoUrl = sub.mediaUrl;
+    }
+
     if (withGeo.length > 0) {
       updateFields.lat = withGeo.reduce((sum, s) => sum + s.lat!, 0) / withGeo.length;
       updateFields.lng = withGeo.reduce((sum, s) => sum + s.lng!, 0) / withGeo.length;
@@ -201,6 +207,7 @@ export async function processSubmission(submissionId: string): Promise<void> {
         urgency: sub.urgency || "medium",
         state: "claimed",
         visibility: "claimed",
+        photoUrl: sub.mediaUrl ?? null,
       });
 
     await updateSubmission(sub.id, { demandId: newDemand.id, status: "merged" });
@@ -245,6 +252,7 @@ export async function applyMergeReviewDecision(args: {
         urgency: sub.urgency || "medium",
         state: "claimed",
         visibility: "claimed",
+        photoUrl: sub.mediaUrl ?? null,
       });
 
     await updateSubmission(sub.id, { demandId: newDemand.id, status: "merged" });
@@ -284,6 +292,10 @@ export async function applyMergeReviewDecision(args: {
       affectedCount: uniqueKeys.size,
       updatedAt: new Date(),
     };
+
+    if (sub.mediaUrl) {
+      updateFields.photoUrl = sub.mediaUrl;
+    }
 
     if (withGeo.length > 0) {
       updateFields.lat = withGeo.reduce((sum, s) => sum + s.lat!, 0) / withGeo.length;
@@ -325,6 +337,7 @@ export async function split(
       urgency: refSub.urgency || "medium",
       state: "claimed",
       visibility: "claimed",
+      photoUrl: refSub.mediaUrl ?? null,
     });
 
   // Re-associate split submissions to the new demand

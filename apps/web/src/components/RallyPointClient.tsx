@@ -22,7 +22,9 @@ interface RallyPointClientProps {
 }
 
 export function RallyPointClient({ demandId, isPersonal }: RallyPointClientProps) {
-  const { locale } = useApp();
+  const { locale, role } = useApp();
+  const mapHref =
+    role === "citizen" ? "/user/map" : role === "official" ? "/authority/map" : "/mp/map";
   const [demand, setDemand] = useState<Demand | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -130,7 +132,7 @@ export function RallyPointClient({ demandId, isPersonal }: RallyPointClientProps
           This demand involves a personal category and is not shown publicly. Check your reference
           ID for status.
         </p>
-        <Link href="/submit" className="mt-4 inline-block text-sm font-semibold text-primary">
+        <Link href="/user/register" className="mt-4 inline-block text-sm font-semibold text-primary">
           {shellT("checkRefId", locale)}
         </Link>
       </div>
@@ -155,7 +157,7 @@ export function RallyPointClient({ demandId, isPersonal }: RallyPointClientProps
           This priority doesn&apos;t exist yet, or data hasn&apos;t loaded. Try{" "}
           <code className="text-sm">pnpm seed</code> on the API.
         </p>
-        <Link href="/dashboard" className="mt-4 inline-block font-semibold text-primary">
+        <Link href="/user/issues" className="mt-4 inline-block font-semibold text-primary">
           {shellT("viewPriorities", locale)}
         </Link>
       </div>
@@ -237,7 +239,7 @@ export function RallyPointClient({ demandId, isPersonal }: RallyPointClientProps
               <h2 className="text-sm font-bold">{shellT("affectedArea", locale)}</h2>
               <p className="mt-1 text-sm text-slate-600">{demand.ward} ward</p>
               <Link
-                href="/map"
+              href={mapHref}
                 className="mt-3 inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-primary"
               >
                 📍 {shellT("openMap", locale)}
