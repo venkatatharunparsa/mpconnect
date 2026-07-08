@@ -60,7 +60,7 @@ export interface ComparisonNarrator {
 export class GeminiAiClient implements TextEmbedder, SubmissionExtractor, ComparisonNarrator {
   private genAI: GoogleGenerativeAI;
   private readonly extractionModel = "gemini-2.0-flash";
-  private readonly embeddingModel = "text-embedding-004";
+  private readonly embeddingModel = "gemini-embedding-001";
 
   constructor() {
     const key = process.env.GEMINI_API_KEY;
