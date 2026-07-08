@@ -7,6 +7,7 @@ import { computeStatsFromDemands, fetchDemands, fetchStats } from "./api";
 import { useDashboard } from "./DashboardContext";
 import { DemandDrawer } from "./DemandDrawer";
 import { apiFetch } from "@/lib/api-client";
+import { demandPhotoUrl } from "@/lib/demand-photo";
 import { getDemoCitizenKey } from "@/components/citizenIdentity";
 import type { Demand, Stats } from "./types";
 
@@ -137,12 +138,12 @@ export function DashboardView({ variant = "home" }: { variant?: "home" | "issues
       className="w-full rounded-xl border border-outline-variant bg-white text-left shadow-sm transition hover:shadow-md"
     >
       <div className="relative h-40 overflow-hidden rounded-t-xl bg-slate-200">
-        {demand.photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={demand.photoUrl} alt={demand.title} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-slate-400">No image</div>
-        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={demandPhotoUrl(demand)}
+          alt={demand.title}
+          className="h-full w-full object-cover"
+        />
         {rank != null && (
           <div className="absolute left-3 top-3 rounded-lg bg-tertiary px-2 py-1 text-[11px] font-bold text-white">
             Rank {String(rank).padStart(2, "0")}

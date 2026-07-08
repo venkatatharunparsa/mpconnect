@@ -11,8 +11,6 @@ type ChatMessage = {
   text: string;
 };
 
-const CANNED_REPLY = "This feature is not available in this prototype version.";
-
 const SUGGESTED_PROMPTS = [
   "Top priorities this week",
   "Where to allocate MPLADS funds",
@@ -25,6 +23,44 @@ function uid() {
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
+}
+
+const FALLBACK_REPLIES = [
+  "Here is a prototype snapshot: safety hazards are trending up in MVP and water leakages are the top repeat grievance in Gajuwaka.",
+  "Mock insight: if closure verification drops below 70% in any ward, prioritize follow-up audits before opening new works.",
+  "Simulated summary: weekly momentum is positive, but unresolved high-urgency issues still need tighter department SLAs.",
+];
+
+function getMockReply(text: string) {
+  const q = text.toLowerCase();
+  if (q.includes("top priorities") || q.includes("priority")) {
+    return [
+      "Top priorities this week (mock):",
+      "1) Safety hazards near schools and parks",
+      "2) Water leakages in dense residential pockets",
+      "3) Potholes on key commuter corridors",
+    ].join("\n");
+  }
+
+  if (q.includes("mplads") || q.includes("allocate") || q.includes("fund")) {
+    return [
+      "MPLADS allocation draft (mock):",
+      "• 45% safety + streetlight restoration",
+      "• 35% water network repair and leakage control",
+      "• 20% school/public health micro-infra upgrades",
+    ].join("\n");
+  }
+
+  if (q.includes("ward") && (q.includes("low") || q.includes("resolution"))) {
+    return [
+      "Wards with low resolution rate (mock):",
+      "• MVP: 58% (pending electrical and drainage closures)",
+      "• Bheemili: 61% (road restoration backlog)",
+      "• Gajuwaka: 64% (reopened water leakage complaints)",
+    ].join("\n");
+  }
+
+  return FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)];
 }
 
 function TypingDots() {
@@ -85,8 +121,6 @@ export function MPCopilotWidget() {
   const endRef = useRef<HTMLDivElement | null>(null);
   const typingTimerRef = useRef<number | null>(null);
 
-  const delayMs = useMemo(() => clamp(600 + Math.floor(Math.random() * 300), 600, 900), []);
-
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -122,13 +156,15 @@ export function MPCopilotWidget() {
     const trimmed = text.trim();
     if (!trimmed) return;
     if (typingTimerRef.current != null) window.clearTimeout(typingTimerRef.current);
+    const delayMs = clamp(600 + Math.floor(Math.random() * 300), 600, 900);
+    const mockReply = getMockReply(trimmed);
 
     setMessages((prev) => [...prev, { id: uid(), role: "user", text: trimmed }]);
     setInput("");
     setTyping(true);
 
     typingTimerRef.current = window.setTimeout(() => {
-      setMessages((prev) => [...prev, { id: uid(), role: "assistant", text: CANNED_REPLY }]);
+      setMessages((prev) => [...prev, { id: uid(), role: "assistant", text: mockReply }]);
       setTyping(false);
       typingTimerRef.current = null;
     }, delayMs);

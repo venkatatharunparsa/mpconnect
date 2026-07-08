@@ -3,6 +3,7 @@
 import { PERSONAL_CATEGORIES } from "@mpconnect/shared";
 import { StateBadge, UrgencyIndicator } from "./StateBadge";
 import { t } from "./labels";
+import { demandPhotoUrl } from "@/lib/demand-photo";
 import type { Demand, UiLocale } from "./types";
 
 interface DemandListItemProps {
@@ -11,18 +12,6 @@ interface DemandListItemProps {
   selected: boolean;
   onSelect: (id: string) => void;
   rank?: number;
-}
-
-function categoryEmoji(category: string) {
-  const c = category.toLowerCase();
-  if (c.includes("water")) return "💧";
-  if (c.includes("road") || c.includes("pothole")) return "🛣️";
-  if (c.includes("drain")) return "🚰";
-  if (c.includes("garbage")) return "🗑️";
-  if (c.includes("light")) return "💡";
-  if (c.includes("health")) return "🏥";
-  if (c.includes("education") || c.includes("school")) return "📚";
-  return "📷";
 }
 
 export function DemandListItem({
@@ -50,18 +39,12 @@ export function DemandListItem({
         )}
 
         <div className="shrink-0">
-          {demand.photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={demand.photoUrl}
-              alt=""
-              className="h-16 w-16 rounded-md border border-slate-200 object-cover"
-            />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-lg">
-              {categoryEmoji(demand.category)}
-            </div>
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={demandPhotoUrl(demand)}
+            alt=""
+            className="h-16 w-16 rounded-md border border-slate-200 object-cover"
+          />
         </div>
 
         <div className="min-w-0 flex-1">
