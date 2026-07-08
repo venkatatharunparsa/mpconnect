@@ -1,10 +1,10 @@
 import { RoleGate } from "@/components/role/RoleGate";
-import { ProfileView } from "@/components/profile/ProfileView";
+import { AuthorityOfficialProfile } from "@/components/authority/AuthorityOfficialProfile";
 
 export default function AuthorityProfile() {
   return (
     <RoleGate role="official">
-      <ProfileView role="official" />
+      <AuthorityOfficialProfile />
     </RoleGate>
   );
 }

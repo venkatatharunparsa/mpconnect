@@ -1,10 +1,10 @@
 import { RoleGate } from "@/components/role/RoleGate";
-import SubmitPage from "@/client/components/submit-page";
+import { RegisterIssueForm } from "@/components/citizen/RegisterIssueForm";
 
 export default function UserRegister() {
   return (
     <RoleGate role="citizen">
-      <SubmitPage />
+      <RegisterIssueForm />
     </RoleGate>
   );
 }

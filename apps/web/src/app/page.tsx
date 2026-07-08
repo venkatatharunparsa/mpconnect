@@ -13,54 +13,82 @@ function dashboardHref(role: AppRole): string {
 
 const t = {
   en: {
-    title: "Choose your role",
-    subtitle: "This demo skips password login. Pick a role to open the correct dashboard flow.",
-    mpTitle: "Login as MP",
-    mpSub: "Constituency command view with ranked public priorities.",
-    authTitle: "Login as Authority",
-    authSub: "Execution workspace for assigned issues and updates.",
-    userTitle: "Login as User",
-    userSub: "Report a problem, track status, and support public demands.",
+    tagline: "Report. Track. Resolve — Visakhapatnam.",
+    footnote: "No password — demo environment",
+    footer: "Official Portal for Visakhapatnam Constituency",
+    citizen: {
+      title: "Login as Citizen",
+      subtitle: "Raise issues in your ward, track progress, and support local community demands.",
+      cta: "Enter Portal",
+    },
+    official: {
+      title: "Login as Authority",
+      subtitle: "Review incoming demands, assign tasks, and update resolution status.",
+      cta: "Admin Access",
+    },
+    mp: {
+      title: "Login as MP",
+      subtitle: "Executive overview of constituency performance and urgent priorities.",
+      cta: "Member View",
+    },
   },
   te: {
-    title: "మీ పాత్రను ఎంచుకోండి",
-    subtitle: "ఈ డెమో పాస్‌వర్డ్ లాగిన్‌ను దాటవేస్తుంది. సరైన డాష్‌బోర్డ్ ఫ్లోను తెరవడానికి ఒక పాత్రను ఎంచుకోండి.",
-    mpTitle: "MP గా లాగిన్ అవ్వండి",
-    mpSub: "ర్యాంక్ చేయబడిన ప్రజల ప్రాధాన్యతలతో నియోజకవర్గ కమాండ్ వ్యూ.",
-    authTitle: "అధికారిగా లాగిన్ అవ్వండి",
-    authSub: "కేటాయించిన సమస్యలు మరియు నవీకరణల కోసం వర్క్‌స్పేస్.",
-    userTitle: "వినియోగదారుడిగా లాగిన్ అవ్వండి",
-    userSub: "సమస్యను నివేదించండి, స్థితిని ట్రాక్ చేయండి మరియు ప్రజల డిమాండ్లకు మద్దతు ఇవ్వండి.",
-  }
+    tagline: "నివేదించండి. ట్రాక్ చేయండి. పరిష్కరించండి — విశాఖపట్నం.",
+    footnote: "పాస్‌వర్డ్ లేదు — డెమో వాతావరణం",
+    footer: "విశాఖపట్నం నియోజకవర్గ అధికారిక పోర్టల్",
+    citizen: {
+      title: "పౌరుడిగా లాగిన్",
+      subtitle: "మీ వార్డ్‌లో సమస్యలు నివేదించండి, ప్రగతిని ట్రాక్ చేయండి.",
+      cta: "పోర్టల్‌కు ప్రవేశించండి",
+    },
+    official: {
+      title: "అధికారిగా లాగిన్",
+      subtitle: "డిమాండ్లను సమీక్షించండి, పనులు కేటాయించండి, పరిష్కార స్థితిని నవీకరించండి.",
+      cta: "అడ్మిన్ యాక్సెస్",
+    },
+    mp: {
+      title: "MP గా లాగిన్",
+      subtitle: "నియోజకవర్గ పనితీరు మరియు అత్యవసర ప్రాధాన్యతల అవలోకనం.",
+      cta: "సభ్యుల వీక్షణ",
+    },
+  },
 };
+
+const ROLE_CARDS: Array<{
+  role: AppRole;
+  icon: string;
+  watermark: string;
+  accent: string;
+  textAccent: string;
+}> = [
+  {
+    role: "citizen",
+    icon: "person",
+    watermark: "groups",
+    accent: "bg-primary-container",
+    textAccent: "text-primary-container",
+  },
+  {
+    role: "official",
+    icon: "shield_person",
+    watermark: "account_balance_wallet",
+    accent: "bg-authority-indigo",
+    textAccent: "text-authority-indigo",
+  },
+  {
+    role: "mp",
+    icon: "stars",
+    watermark: "policy",
+    accent: "bg-tertiary",
+    textAccent: "text-tertiary",
+  },
+];
 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { role, setRole, locale } = useApp();
-  const isTe = locale === "te";
-  const translations = isTe ? t.te : t.en;
-
-  const roleCards = [
-    {
-      role: "mp" as AppRole,
-      title: translations.mpTitle,
-      subtitle: translations.mpSub,
-      emoji: "🏛️",
-    },
-    {
-      role: "official" as AppRole,
-      title: translations.authTitle,
-      subtitle: translations.authSub,
-      emoji: "🗂️",
-    },
-    {
-      role: "citizen" as AppRole,
-      title: translations.userTitle,
-      subtitle: translations.userSub,
-      emoji: "🎙️",
-    },
-  ];
+  const { setRole, locale } = useApp();
+  const copy = locale === "te" ? t.te : t.en;
 
   useEffect(() => {
     if (searchParams.get("pick") === "1") return;
@@ -77,45 +105,62 @@ export default function Home() {
   }, [router, searchParams]);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col justify-center bg-surface px-4 py-8 sm:px-6">
-      <div className="rounded-2xl bg-white p-5 shadow-card ring-1 ring-slate-100 sm:p-8">
-        <div className="mb-5 flex items-center justify-between gap-2">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/70">
-              MPconnect
-            </p>
-            <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{translations.title}</h1>
-          </div>
-          <LangToggleLight />
-        </div>
-        <p className="mb-5 text-sm text-slate-600">
-          {translations.subtitle}
-        </p>
-
-        <div className="space-y-3">
-          {roleCards.map((item) => (
-            <button
-              key={item.role}
-              type="button"
-              onClick={() => {
-                setRole(item.role);
-                router.push(dashboardHref(item.role));
-              }}
-              className={`w-full rounded-xl border p-4 text-left transition-colors ${
-                role === item.role
-                  ? "border-primary bg-primary/5"
-                  : "border-slate-200 hover:border-primary/40 hover:bg-slate-50"
-              }`}
-            >
-              <p className="text-sm font-bold text-slate-900">
-                <span className="mr-2">{item.emoji}</span>
-                {item.title}
-              </p>
-              <p className="mt-1 text-xs text-slate-500">{item.subtitle}</p>
-            </button>
-          ))}
-        </div>
+    <div className="flex min-h-dvh flex-col bg-surface text-on-surface">
+      <div className="fixed right-4 top-4 z-50">
+        <LangToggleLight />
       </div>
+
+      <main className="relative flex flex-grow flex-col items-center justify-center px-4 py-10">
+        <div className="z-10 mb-10 text-center">
+          <span className="material-symbols-outlined text-5xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            account_balance
+          </span>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-primary">MPconnect</h1>
+          <p className="mx-auto mt-2 max-w-md text-base text-on-surface-variant">{copy.tagline}</p>
+        </div>
+
+        <div className="z-10 grid w-full max-w-5xl grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+          {ROLE_CARDS.map((card) => {
+            const roleCopy =
+              card.role === "citizen" ? copy.citizen : card.role === "official" ? copy.official : copy.mp;
+            return (
+              <button
+                key={card.role}
+                type="button"
+                onClick={() => {
+                  setRole(card.role);
+                  router.push(dashboardHref(card.role));
+                }}
+                className="role-card-hover group relative flex flex-col items-start overflow-hidden rounded-2xl glass-card p-6 text-left shadow-sm"
+              >
+                <div className="pointer-events-none absolute right-0 top-0 p-4 opacity-5 transition-opacity group-hover:opacity-10">
+                  <span className="material-symbols-outlined text-[120px]">{card.watermark}</span>
+                </div>
+                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${card.accent}`}>
+                  <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    {card.icon}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-on-surface">{roleCopy.title}</h3>
+                <p className="mt-1 text-sm text-on-surface-variant">{roleCopy.subtitle}</p>
+                <div className={`mt-5 flex items-center text-sm font-semibold ${card.textAccent}`}>
+                  {roleCopy.cta}
+                  <span className="material-symbols-outlined ml-1 text-base">arrow_forward</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="z-10 mt-10 flex items-center text-sm text-outline">
+          <span className="material-symbols-outlined mr-1 text-base">info</span>
+          {copy.footnote}
+        </p>
+      </main>
+
+      <footer className="flex h-20 items-end justify-center bg-gradient-to-t from-surface-container-low to-transparent pb-4">
+        <p className="text-center text-xs text-on-surface-variant/70">{copy.footer}</p>
+      </footer>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { RoleGate } from "@/components/role/RoleGate";
-import { MapView } from "@/components/map/MapView";
+import { AuthorityMapView } from "@/components/authority/AuthorityMapView";
 
 export default function AuthorityMap() {
   return (
     <RoleGate role="official">
-      <MapView />
+      <AuthorityMapView />
     </RoleGate>
   );
 }

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { Authority } from "@/components/authority/types";
+import { fetchAuthorityDemands } from "@/components/authority/api";
 import { computeStatsFromDemands, fetchDemands } from "@/components/dashboard/api";
 import type { Demand } from "@/components/dashboard/types";
 import { getDemoCitizenKey } from "@/components/citizenIdentity";
@@ -26,14 +28,14 @@ const ROLE_META: Record<AppRole, RoleMeta> = {
   official: {
     title: "Authority official",
     subtitle: "Department workspace",
-    accent: "bg-amber-600",
-    chip: "bg-amber-50 text-amber-700",
+    accent: "authority-gradient",
+    chip: "bg-indigo-50 text-authority-indigo",
   },
   mp: {
     title: "Member of Parliament",
     subtitle: "Constituency command",
-    accent: "bg-slate-800",
-    chip: "bg-slate-100 text-slate-700",
+    accent: "bg-tertiary",
+    chip: "bg-purple-50 text-tertiary",
   },
 };
 
@@ -52,9 +54,12 @@ function QuickLink({ href, label, hint }: { href: string; label: string; hint: s
   );
 }
 
-export function ProfileView({ role }: { role: AppRole }) {
+export function ProfileView({ role, authority }: { role: AppRole; authority?: Authority | null }) {
   const { locale, setLocale } = useApp();
   const meta = ROLE_META[role];
+  const headerTitle = role === "official" && authority ? authority.name : meta.title;
+  const headerSubtitle =
+    role === "official" && authority ? `${authority.org} · ${authority.level}` : meta.subtitle;
 
   const [citizenKey, setCitizenKey] = useState<string>("—");
   const [demands, setDemands] = useState<Demand[]>([]);
@@ -68,7 +73,8 @@ export function ProfileView({ role }: { role: AppRole }) {
     }
     let cancelled = false;
     (async () => {
-      const data = await fetchDemands();
+      const data =
+        role === "official" && authority ? await fetchAuthorityDemands(authority) : await fetchDemands();
       if (!cancelled) {
         setDemands(data);
         setLoading(false);
@@ -77,7 +83,7 @@ export function ProfileView({ role }: { role: AppRole }) {
     return () => {
       cancelled = true;
     };
-  }, [role]);
+  }, [role, authority]);
 
   const stats = useMemo(() => computeStatsFromDemands(demands), [demands]);
 
@@ -92,9 +98,10 @@ export function ProfileView({ role }: { role: AppRole }) {
       const actionable = demands.filter((d) =>
         ["claimed", "validated_public", "routed", "in_progress", "fix_claimed"].includes(d.state),
       ).length;
+      const resolved = demands.filter((d) => d.state === "resolved_verified").length;
       return [
         { label: "Actionable", value: actionable },
-        { label: "Reopened", value: stats.reopenedCount },
+        { label: "Resolved", value: resolved },
       ];
     }
     return [
@@ -134,8 +141,8 @@ export function ProfileView({ role }: { role: AppRole }) {
             <IconUser className="h-7 w-7" />
           </div>
           <div className="min-w-0">
-            <p className="text-lg font-extrabold leading-tight">{meta.title}</p>
-            <p className="text-sm text-white/80">{meta.subtitle}</p>
+            <p className="text-lg font-extrabold leading-tight">{headerTitle}</p>
+            <p className="text-sm text-white/80">{headerSubtitle}</p>
           </div>
         </div>
         {role === "citizen" && (
