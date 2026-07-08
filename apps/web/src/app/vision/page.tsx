@@ -86,7 +86,6 @@ const DOCS = [
   { file: "VISION.md", desc: "What we're building, why, and for whom — the Arilova story and full end-state feature map." },
   { file: "EXECUTION.md", desc: "How we build: phase plan, prototype gates, team roles, and dependency logic." },
   { file: "hackathon-build-pack-v1.0.md", desc: "34-hour war plan: 7 demo moments, hour plan, build prompts H0–H13, seed spec." },
-  { file: "team-execution-plan-v1.0.md", desc: "Per-person prompts and commit plan for the hackathon build." },
   { file: "functional-requirements-v1.0.md", desc: "Scope law — every feature traceable to a requirement ID." },
   { file: "non-functional-requirements-v1.0.md", desc: "Engineering targets, pilot-gate criteria, performance and reliability." },
   { file: "system-design-v1.0.md", desc: "Full production system design — the complete end-state architecture." },

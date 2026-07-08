@@ -2,28 +2,17 @@
 
 import { apiFetch } from "@/lib/api-client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getDemoCitizenKey } from "@/components/citizenIdentity";
 import { extractVoiceTranscript, submitVoiceSubmission } from "@/lib/intake";
 import type { GeminiExtraction } from "@mpconnect/shared";
 
 type CallPhase = "idle" | "calling" | "active" | "confirming" | "done";
 type CallMode = "live" | "push";
 
-const CITIZEN_KEY_STORAGE = "mpconnect_citizen_key";
-
 const LIVE_SYSTEM = `You are the MPconnect intake line for Visakhapatnam Lok Sabha.
 Greet in Telugu. Collect only WHAT the citizen needs and WHERE (area/ward).
-Then read back a one-sentence summary and ask "à°¸à°°à±ˆà°¨à°¦à±‡à°¨à°¾?" for confirmation.
+Then read back a one-sentence summary and ask for confirmation.
 Do not discuss unrelated topics.`;
-
-function getCitizenKey(): string {
-  if (typeof window === "undefined") return "demo-voice";
-  let key = localStorage.getItem(CITIZEN_KEY_STORAGE);
-  if (!key) {
-    key = `DEMO-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
-    localStorage.setItem(CITIZEN_KEY_STORAGE, key);
-  }
-  return key;
-}
 
 function speak(text: string, lang = "te-IN") {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -224,7 +213,7 @@ export default function VoicePage() {
     if (!extraction) return;
     setStatus("Submittingâ€¦");
     const result = await submitVoiceSubmission({
-      citizenKey: getCitizenKey(),
+      citizenKey: getDemoCitizenKey(),
       rawText: transcript || summary,
       extraction,
     });

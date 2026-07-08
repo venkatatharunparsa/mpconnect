@@ -4,9 +4,15 @@ export default {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
-      colors: {
+        colors: {
         primary: { DEFAULT: "#006d5b", light: "#00897b", dark: "#004d40" },
         accent: { DEFAULT: "#e65100", light: "#ff7043", dark: "#bf360c" },
+        janavaani: {
+          primary: "#00695C",
+          accent: "#E85D04",
+          teal: "#00796B",
+          secondary: "#26A69A",
+        },
         surface: { DEFAULT: "#f4f6f8", card: "#ffffff" },
         state: {
           claimed: "#f59e0b",

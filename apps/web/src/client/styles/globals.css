@@ -23,3 +23,9 @@ body {
     }
   }
 }
+
+/* Leaflet map container */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 0;
+}

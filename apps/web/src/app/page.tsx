@@ -1,5 +1,5 @@
-import LandingPage from "@/client/components/landing-page";
+import { CitizenHome } from "@/components/citizen/CitizenHome";
 
 export default function Home() {
-  return <LandingPage />;
+  return <CitizenHome />;
 }

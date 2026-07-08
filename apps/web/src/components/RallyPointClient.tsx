@@ -237,7 +237,7 @@ export function RallyPointClient({ demandId, isPersonal }: RallyPointClientProps
               <h2 className="text-sm font-bold">{shellT("affectedArea", locale)}</h2>
               <p className="mt-1 text-sm text-slate-600">{demand.ward} ward</p>
               <Link
-                href="/dashboard"
+                href="/map"
                 className="mt-3 inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-primary"
               >
                 📍 {shellT("openMap", locale)}
