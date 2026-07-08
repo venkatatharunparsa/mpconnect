@@ -6,6 +6,7 @@ import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/servi
 import { appendEvent } from "@/server/services/lifecycle/events";
 import { transition } from "@/server/services/lifecycle/lifecycle";
 import type { DemandState } from "@/server/services/lifecycle/lifecycle";
+import { notifyReportersForDemand } from "@/server/services/notifications/notify";
 
 const bodySchema = z
   .object({
@@ -44,6 +45,8 @@ export async function POST(
       actorId: body.actorId,
       payload: { previousState: demand.state, newState },
     });
+
+    await notifyReportersForDemand(params.id, "validated");
 
     return jsonOk({ demandId: params.id, state: newState, visibility: "public" });
   } catch (err) {

@@ -7,6 +7,7 @@ import { appendEvent } from "@/server/services/lifecycle/events";
 import { transition } from "@/server/services/lifecycle/lifecycle";
 import type { DemandState } from "@/server/services/lifecycle/lifecycle";
 import { evaluateVerificationQuorum } from "@/server/services/lifecycle/verification";
+import { notifyReportersForDemand } from "@/server/services/notifications/notify";
 
 const bodySchema = z
   .object({
@@ -80,6 +81,8 @@ export async function POST(
         payload: { reason: "citizen_denied_fix", falseClosureCount: demand.falseClosureCount + 1 },
       });
 
+      await notifyReportersForDemand(v.demandId, "reopened");
+
       return jsonOk({
         verificationId,
         demandId: v.demandId,
@@ -132,6 +135,8 @@ export async function POST(
         actorId: "verification-quorum",
         payload: { confirms, quorum: quorum.quorumNeeded },
       });
+
+      await notifyReportersForDemand(v.demandId, "resolved_verified");
 
       return jsonOk({ verificationId, demandId: v.demandId, state: newState, verified: true });
     }

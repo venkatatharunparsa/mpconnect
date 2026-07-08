@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TAXONOMY } from "@/server/core/taxonomy";
+import { TAXONOMY } from "@mpconnect/shared";
 import { approveValidation, rejectValidation } from "./api";
 import { REJECT_REASONS, type ValidationItem } from "./types";
 

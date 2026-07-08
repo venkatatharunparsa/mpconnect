@@ -8,6 +8,7 @@ import { transition } from "@/server/services/lifecycle/lifecycle";
 import type { DemandState } from "@/server/services/lifecycle/lifecycle";
 import { getDemandsByState, updateDemand } from "@/server/repositories/demand";
 import { findFirstEventByType } from "@/server/repositories/event";
+import { notifyReportersForDemand } from "@/server/services/notifications/notify";
 
 export async function processVerificationTimeouts(): Promise<{ timedOut: string[] }> {
   const cutoff = new Date();
@@ -37,6 +38,8 @@ export async function processVerificationTimeouts(): Promise<{ timedOut: string[
       actorId: "verification-timeout",
       payload: { previousState: demand.state, newState, timeoutDays: CONFIG.verification.timeoutDays },
     });
+
+    await notifyReportersForDemand(demand.id, "resolved_unverified");
 
     timedOut.push(demand.id);
   }

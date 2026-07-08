@@ -7,6 +7,7 @@ import { appendEvent } from "@/server/services/lifecycle/events";
 import { transition } from "@/server/services/lifecycle/lifecycle";
 import type { DemandState } from "@/server/services/lifecycle/lifecycle";
 import { proposeRouting, getVerifiedAuthority } from "@/server/services/lifecycle/routing";
+import { notifyReportersForDemand } from "@/server/services/notifications/notify";
 
 const bodySchema = z
   .object({
@@ -76,6 +77,8 @@ export async function POST(
         },
       });
     }
+
+    await notifyReportersForDemand(params.id, "routed", { authorityName: authority.name });
 
     return jsonOk({ demandId: params.id, state: newState, authorityId: body.authorityId });
   } catch (err) {

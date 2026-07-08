@@ -1,12 +1,16 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { runExtraction, submitExtracted } from "@/server/actions/submit";
+import { getDemoCitizenKey } from "@/components/citizenIdentity";
+import { useApp } from "@/components/shell/AppProvider";
+import { runExtraction, submitExtracted } from "@/lib/intake";
+import { saveRecentSubmission } from "@/lib/recent-submissions";
 import { t, type Lang } from "../i18n";
 import { useVerificationPoll } from "../hooks/use-verifications";
 import { formatStatusLines, needsLocationClarify } from "../utils/submit-utils";
-import type { GeminiExtraction } from "@/server/clients/gemini";
-import { isValidRefIdFormat } from "@/server/refid-format";
+import type { GeminiExtraction } from "@mpconnect/shared";
+import { isValidRefIdFormat } from "@mpconnect/shared";
 
 type Msg = {
   id: string;
@@ -17,6 +21,8 @@ type Msg = {
   verificationId?: number;
   demandTitle?: string;
   showReadbackChips?: boolean;
+  isHelpdeskPromo?: boolean;
+  originalQuestion?: string;
 };
 
 type PendingVoice = {
@@ -30,21 +36,10 @@ type PendingLocation = {
   originalInput: string;
 };
 
-const CITIZEN_KEY_STORAGE = "mpconnect_citizen_key";
 const SAFETY_PREFIX = "mpconnect_safety_";
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
-function getCitizenKey(): string {
-  if (typeof window === "undefined") return "demo-anon";
-  let key = localStorage.getItem(CITIZEN_KEY_STORAGE);
-  if (!key) {
-    key = `DEMO-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
-    localStorage.setItem(CITIZEN_KEY_STORAGE, key);
-  }
-  return key;
 }
 
 function blobToBase64(blob: Blob): Promise<string> {
@@ -60,7 +55,8 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 export default function SubmitPage() {
-  const [lang, setLang] = useState<Lang>("te");
+  const { locale } = useApp();
+  const lang: Lang = locale;
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -68,6 +64,7 @@ export default function SubmitPage() {
   const [recording, setRecording] = useState(false);
   const [pendingVoice, setPendingVoice] = useState<PendingVoice | null>(null);
   const [pendingLocation, setPendingLocation] = useState<PendingLocation | null>(null);
+  const [mode, setMode] = useState<"grievance" | "helpdesk">("grievance");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -83,14 +80,14 @@ export default function SubmitPage() {
   }, []);
 
   useEffect(() => {
-    const key = getCitizenKey();
+    const key = getDemoCitizenKey();
     setCitizenKey(key);
 
     if (!localStorage.getItem(`${SAFETY_PREFIX}${key}`)) {
-      addBot(t("te", "safetyNotice"), { kind: "safety" });
+      addBot(t(lang, "safetyNotice"), { kind: "safety" });
       localStorage.setItem(`${SAFETY_PREFIX}${key}`, "1");
     }
-  }, [addBot]);
+  }, [addBot, lang]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -108,6 +105,12 @@ export default function SubmitPage() {
         reply += `\n\n${t(lang, "rateCapReview")}`;
       }
       addBot(reply, { refId: result.refId });
+      saveRecentSubmission({
+        refId: result.refId,
+        title: summary.slice(0, 80) || extraction.category,
+        category: extraction.category,
+        status: "submitted",
+      });
       return { result, summary };
     },
     [addBot, citizenKey, lang],
@@ -168,7 +171,7 @@ export default function SubmitPage() {
     async (refId: string) => {
       setBusy(true);
       try {
-        const res = await fetch(`/api/submissions/${encodeURIComponent(refId)}`);
+        const res = await apiFetch(`/api/submissions/${encodeURIComponent(refId)}`);
         const data = await res.json();
         if (!res.ok) {
           addBot(data.error ?? "Not found");
@@ -192,6 +195,32 @@ export default function SubmitPage() {
 
       addUser(trimmed);
       setInput("");
+
+      if (mode === "helpdesk") {
+        setBusy(true);
+        try {
+          const res = await apiFetch("/api/helpdesk", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: trimmed }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            addBot(data.answer);
+            addBot(
+              "మీరు దీనిని ఒక గ్రీవెన్స్ (ఫిర్యాదు) రూపంలో నమోదు చేయాలనుకుంటున్నారా?\n\nDo you want to file this as an official grievance?",
+              { isHelpdeskPromo: true, originalQuestion: trimmed }
+            );
+          } else {
+            addBot("క్షమించండి, సహాయ కేంద్రం సమాచారాన్ని కనుగొనలేకపోయింది.\n\nSorry, Help Desk could not retrieve information.");
+          }
+        } catch {
+          addBot("క్షమించండి, సహాయ కేంద్రం సమాచారాన్ని కనుగొనలేకపోయింది.\n\nSorry, Help Desk could not retrieve information.");
+        } finally {
+          setBusy(false);
+        }
+        return;
+      }
 
       if (isValidRefIdFormat(trimmed.toUpperCase())) {
         await lookupRefId(trimmed.toUpperCase());
@@ -243,6 +272,7 @@ export default function SubmitPage() {
       pendingLocation,
       pendingVoice,
       processExtraction,
+      mode,
     ],
   );
 
@@ -261,7 +291,7 @@ export default function SubmitPage() {
         stream.getTracks().forEach((tr) => tr.stop());
         const blob = new Blob(chunksRef.current, { type: mimeType });
         const base64 = await blobToBase64(blob);
-        addUser(`🎤 ${t(lang, "micStop")}`);
+        addUser(`🎙️ ${t(lang, "micStop")}`);
         await processExtraction(
           { audioBase64: base64, audioMime: mimeType },
           "[voice note]",
@@ -294,7 +324,7 @@ export default function SubmitPage() {
   const respondVerification = async (verificationId: number, response: "confirm" | "deny") => {
     setBusy(true);
     try {
-      const res = await fetch(`/api/verifications/${verificationId}/respond`, {
+      const res = await apiFetch(`/api/verifications/${verificationId}/respond`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ response, citizenKey }),
@@ -323,16 +353,28 @@ export default function SubmitPage() {
           <p className="text-xs opacity-80">MPconnect intake</p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Mode Switcher */}
+          <div className="flex items-center bg-white/10 rounded-full p-0.5 text-xs mr-2">
+            <button
+              onClick={() => setMode("grievance")}
+              className={`rounded-full px-2.5 py-0.5 font-bold transition-colors ${
+                mode === "grievance" ? "bg-white text-primary" : "text-white hover:bg-white/10"
+              }`}
+            >
+              Grievance
+            </button>
+            <button
+              onClick={() => setMode("helpdesk")}
+              className={`rounded-full px-2.5 py-0.5 font-bold transition-colors ${
+                mode === "helpdesk" ? "bg-white text-primary" : "text-white hover:bg-white/10"
+              }`}
+            >
+              Helpdesk
+            </button>
+          </div>
           <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
             {t(lang, "demoIdentity")}: {citizenKey.slice(-4)}
           </span>
-          <button
-            type="button"
-            onClick={() => setLang((l) => (l === "te" ? "en" : "te"))}
-            className="text-xs border border-white/40 px-2 py-1 rounded"
-          >
-            {lang === "te" ? "EN" : "TE"}
-          </button>
         </div>
       </header>
 
@@ -378,7 +420,7 @@ export default function SubmitPage() {
                     type="button"
                     disabled={busy}
                     onClick={() => respondVerification(m.verificationId!, "confirm")}
-                    className="flex-1 bg-verified text-white text-xs py-2 rounded-lg"
+                    className="flex-1 bg-emerald-600 text-white text-xs py-2 rounded-lg"
                   >
                     {t(lang, "confirmFixed")}
                   </button>
@@ -386,9 +428,25 @@ export default function SubmitPage() {
                     type="button"
                     disabled={busy}
                     onClick={() => respondVerification(m.verificationId!, "deny")}
-                    className="flex-1 bg-reopened text-white text-xs py-2 rounded-lg"
+                    className="flex-1 bg-red-600 text-white text-xs py-2 rounded-lg"
                   >
                     {t(lang, "denyNotFixed")}
+                  </button>
+                </div>
+              )}
+              {m.isHelpdeskPromo && (
+                <div className="flex gap-2 mt-2">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setMode("grievance");
+                      setInput(m.originalQuestion ?? "");
+                      addBot("సమస్య నమోదు ప్రక్రియకు మార్చబడింది. దయచేసి క్రింద ఉన్న బటన్‌ను ఉపయోగించి పంపండి.\n\nSwitched to grievance reporting. Please click send to submit your question as a grievance.");
+                    }}
+                    className="flex-1 bg-primary text-white text-xs py-2 rounded-lg"
+                  >
+                    {lang === "te" ? "ఫిర్యాదుగా నమోదు చేయి" : "Yes, file grievance"}
                   </button>
                 </div>
               )}
@@ -456,7 +514,7 @@ export default function SubmitPage() {
               handleTextSend(input);
             }
           }}
-          placeholder={t(lang, "placeholder")}
+          placeholder={mode === "helpdesk" ? "Ask eligibility question..." : t(lang, "placeholder")}
           rows={1}
           disabled={busy}
           className="flex-1 resize-none rounded-3xl border border-slate-300 px-4 py-2 text-sm max-h-24"

@@ -16,3 +16,18 @@ export async function getVerifiedAuthorityById(id: number) {
   if (!row.verified) return null;
   return row;
 }
+
+export async function fetchStaleAuthorities() {
+  const all = await getAllAuthorities();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 180);
+
+  return all.filter((a) => {
+    try {
+      const parsed = new Date(a.verifiedOn);
+      return isNaN(parsed.getTime()) || parsed < cutoff;
+    } catch {
+      return true;
+    }
+  });
+}

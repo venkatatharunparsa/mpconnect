@@ -1,28 +1,18 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { extractVoiceTranscript, submitVoiceSubmission } from "@/server/actions/voice";
-import type { GeminiExtraction } from "@/server/clients/gemini";
+import { getDemoCitizenKey } from "@/components/citizenIdentity";
+import { extractVoiceTranscript, submitVoiceSubmission } from "@/lib/intake";
+import type { GeminiExtraction } from "@mpconnect/shared";
 
 type CallPhase = "idle" | "calling" | "active" | "confirming" | "done";
 type CallMode = "live" | "push";
 
-const CITIZEN_KEY_STORAGE = "mpconnect_citizen_key";
-
 const LIVE_SYSTEM = `You are the MPconnect intake line for Visakhapatnam Lok Sabha.
 Greet in Telugu. Collect only WHAT the citizen needs and WHERE (area/ward).
-Then read back a one-sentence summary and ask "సరైనదేనా?" for confirmation.
+Then read back a one-sentence summary and ask for confirmation.
 Do not discuss unrelated topics.`;
-
-function getCitizenKey(): string {
-  if (typeof window === "undefined") return "demo-voice";
-  let key = localStorage.getItem(CITIZEN_KEY_STORAGE);
-  if (!key) {
-    key = `DEMO-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
-    localStorage.setItem(CITIZEN_KEY_STORAGE, key);
-  }
-  return key;
-}
 
 function speak(text: string, lang = "te-IN") {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -97,7 +87,7 @@ export default function VoicePage() {
               }
             }
           },
-          onerror: () => setStatus("Live connection error — switched to push-to-talk."),
+          onerror: () => setStatus("Live connection error â€” switched to push-to-talk."),
         },
       });
 
@@ -122,7 +112,7 @@ export default function VoicePage() {
 
       setMode("live");
       setStatus("Live line connected");
-      speak("నమస్కారం. MPconnect లైన్. మీ సమస్య ఏమిటి, ఎక్కడ?");
+      speak("à°¨à°®à°¸à±à°•à°¾à°°à°‚. MPconnect à°²à±ˆà°¨à±. à°®à±€ à°¸à°®à°¸à±à°¯ à°à°®à°¿à°Ÿà°¿, à°Žà°•à±à°•à°¡?");
       return true;
     } catch {
       return false;
@@ -132,7 +122,7 @@ export default function VoicePage() {
   const startPushToTalk = useCallback(async () => {
     setMode("push");
     setStatus("Push-to-talk mode");
-    speak("నమస్కారం. MPconnect లైన్. మీ సమస్య ఏమిటి, ఎక్కడ?");
+    speak("à°¨à°®à°¸à±à°•à°¾à°°à°‚. MPconnect à°²à±ˆà°¨à±. à°®à±€ à°¸à°®à°¸à±à°¯ à°à°®à°¿à°Ÿà°¿, à°Žà°•à±à°•à°¡?");
   }, []);
 
   const startCall = async () => {
@@ -165,8 +155,8 @@ export default function VoicePage() {
       stream.getTracks().forEach((t) => t.stop());
       const blob = new Blob(chunksRef.current, { type: mimeType });
       const base64 = await blobToBase64(blob);
-      setStatus("Processing…");
-      const audioRes = await fetch("/api/voice/extract", {
+      setStatus("Processingâ€¦");
+      const audioRes = await apiFetch("/api/voice/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ audioBase64: base64, audioMime: mimeType }),
@@ -175,7 +165,7 @@ export default function VoicePage() {
 
       const ext = audioRes.ok ? audioResult.extraction : null;
       if (!ext) {
-        setStatus("Could not understand — try again.");
+        setStatus("Could not understand â€” try again.");
         return;
       }
       const s = ext.summaryTe || ext.summaryEn;
@@ -183,7 +173,7 @@ export default function VoicePage() {
       setSummary(s);
       setTranscript(s);
       setPhase("confirming");
-      speak(`మీ సమస్య: ${s}. సరైనదేనా?`);
+      speak(`à°®à±€ à°¸à°®à°¸à±à°¯: ${s}. à°¸à°°à±ˆà°¨à°¦à±‡à°¨à°¾?`);
     };
     recorderRef.current = recorder;
     recorder.start();
@@ -205,7 +195,7 @@ export default function VoicePage() {
       return;
     }
 
-    setStatus("Extracting…");
+    setStatus("Extractingâ€¦");
     const result = await extractVoiceTranscript(text);
     if (result.needsHuman) {
       setStatus("Needs human review.");
@@ -216,20 +206,20 @@ export default function VoicePage() {
     setExtraction(ext);
     setSummary(ext.summaryTe || ext.summaryEn);
     setPhase("confirming");
-    speak(`మీ సమస్య: ${ext.summaryTe || ext.summaryEn}. సరైనదేనా?`);
+    speak(`à°®à±€ à°¸à°®à°¸à±à°¯: ${ext.summaryTe || ext.summaryEn}. à°¸à°°à±ˆà°¨à°¦à±‡à°¨à°¾?`);
   };
 
   const confirmSubmit = async () => {
     if (!extraction) return;
-    setStatus("Submitting…");
+    setStatus("Submittingâ€¦");
     const result = await submitVoiceSubmission({
-      citizenKey: getCitizenKey(),
+      citizenKey: getDemoCitizenKey(),
       rawText: transcript || summary,
       extraction,
     });
     setRefId(result.refId);
     setPhase("done");
-    const spoken = `మీ రిఫరెన్స్ ఐడి: ${result.refId}`;
+    const spoken = `à°®à±€ à°°à°¿à°«à°°à±†à°¨à±à°¸à± à°à°¡à°¿: ${result.refId}`;
     speak(spoken, "te-IN");
     setStatus("Registered");
   };
@@ -238,7 +228,7 @@ export default function VoicePage() {
     <div className="max-w-md mx-auto min-h-[80vh] flex flex-col items-center justify-center gap-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-primary">MPconnect Voice Line</h1>
-        <p className="text-sm text-slate-600 mt-1">తోల్-ఫ్రీ కాల్ అనుభవం · Visakhapatnam</p>
+        <p className="text-sm text-slate-600 mt-1">à°¤à±‹à°²à±-à°«à±à°°à±€ à°•à°¾à°²à± à°…à°¨à±à°­à°µà°‚ Â· Visakhapatnam</p>
       </div>
 
       <div className="w-full bg-slate-900 text-white rounded-3xl p-8 shadow-xl flex flex-col items-center gap-6">
@@ -277,32 +267,32 @@ export default function VoicePage() {
             }}
             className={`w-24 h-24 rounded-full ${recording ? "bg-red-500" : "bg-primary"} text-sm font-medium`}
           >
-            {recording ? "…" : "Speak"}
+            {recording ? "â€¦" : "Speak"}
           </button>
         )}
 
         {phase === "confirming" && (
           <div className="text-center space-y-4 w-full">
             <p className="text-base">{summary}</p>
-            <p className="text-teal-300 text-sm">సరైనదేనా?</p>
+            <p className="text-teal-300 text-sm">à°¸à°°à±ˆà°¨à°¦à±‡à°¨à°¾?</p>
             <div className="flex gap-3 justify-center">
               <button
                 type="button"
                 onClick={confirmSubmit}
                 className="bg-green-500 px-6 py-2 rounded-full font-medium"
               >
-                అవును
+                à°…à°µà±à°¨à±
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setPhase("active");
                   setExtraction(null);
-                  speak("దయచేసి మళ్లీ చెప్పండి.");
+                  speak("à°¦à°¯à°šà±‡à°¸à°¿ à°®à°³à±à°²à±€ à°šà±†à°ªà±à°ªà°‚à°¡à°¿.");
                 }}
                 className="bg-slate-600 px-6 py-2 rounded-full"
               >
-                కాదు
+                à°•à°¾à°¦à±
               </button>
             </div>
           </div>
@@ -310,7 +300,7 @@ export default function VoicePage() {
 
         {phase === "done" && refId && (
           <div className="text-center">
-            <p className="text-sm text-slate-300 mb-2">మీ రిఫరెన్స్ ఐడి</p>
+            <p className="text-sm text-slate-300 mb-2">à°®à±€ à°°à°¿à°«à°°à±†à°¨à±à°¸à± à°à°¡à°¿</p>
             <p className="text-4xl font-bold tracking-wide text-green-400">{refId}</p>
           </div>
         )}
@@ -323,7 +313,7 @@ export default function VoicePage() {
               className={`w-12 h-12 rounded-full ${muted ? "bg-red-600" : "bg-slate-700"}`}
               title="Mute"
             >
-              {muted ? "🔇" : "🔊"}
+              {muted ? "ðŸ”‡" : "ðŸ”Š"}
             </button>
             <button
               type="button"
@@ -335,7 +325,7 @@ export default function VoicePage() {
               className="w-14 h-14 rounded-full bg-red-600 text-white font-bold"
               title="End call"
             >
-              ✕
+              âœ•
             </button>
           </div>
         )}
@@ -353,7 +343,7 @@ export default function VoicePage() {
 
       {!process.env.NEXT_PUBLIC_GEMINI_API_KEY && (
         <p className="text-xs text-slate-500 text-center max-w-sm">
-          Live API unavailable — using push-to-talk fallback. Set NEXT_PUBLIC_GEMINI_API_KEY for Live mode.
+          Live API unavailable â€” using push-to-talk fallback. Set NEXT_PUBLIC_GEMINI_API_KEY for Live mode.
         </p>
       )}
     </div>

@@ -6,6 +6,7 @@ import { appendEvent } from "@/server/services/lifecycle/events";
 import { transition } from "@/server/services/lifecycle/lifecycle";
 import type { DemandState } from "@/server/services/lifecycle/lifecycle";
 import { getDemandById, updateDemand } from "@/server/repositories/demand";
+import { notifyReportersForDemand } from "@/server/services/notifications/notify";
 
 /** Auto-promote demand if affectedCount >= corroboration.k and still claimed. */
 export async function checkCorroboration(demandId: string): Promise<boolean> {
@@ -33,6 +34,8 @@ export async function checkCorroboration(demandId: string): Promise<boolean> {
       newState,
     },
   });
+
+  await notifyReportersForDemand(demandId, "validated");
 
   return true;
 }
