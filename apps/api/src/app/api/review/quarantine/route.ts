@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { jsonOk, handleApiError } from "@/server/services/intake/api-helpers";
 import { fetchQuarantineClusters } from "@/server/repositories/review-queues";
 

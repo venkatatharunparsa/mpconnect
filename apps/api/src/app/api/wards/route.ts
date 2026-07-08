@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { db } from "@/server/db";
 import { wards } from "@/server/db/schema";
 import { jsonOk, handleApiError } from "@/server/services/intake/api-helpers";
