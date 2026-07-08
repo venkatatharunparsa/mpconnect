@@ -103,7 +103,7 @@ export async function withTracing(
       
       // Attempt dynamic loading of api-helpers to format error
       try {
-        const { handleApiError } = require("../services/api-helpers");
+        const { handleApiError } = require("../services/intake/api-helpers");
         const errResponse = handleApiError(err);
         errResponse.headers.set("x-trace-id", traceId);
         return errResponse;

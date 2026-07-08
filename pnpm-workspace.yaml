@@ -1,5 +1,10 @@
 packages:
   - '.'
+  - 'apps/web'
+  - 'packages/shared'
 
 allowBuilds:
-
+  '@google/genai': true
+  esbuild: true
+  protobufjs: true
+  unrs-resolver: true
