@@ -1,3 +1,4 @@
+import { apiFetch, apiUrl } from "@/lib/api-client";
 import type {
   MergeReviewItem,
   QuarantineCluster,
@@ -8,7 +9,7 @@ import type {
 // TODO: confirm shape with A
 export async function fetchValidationQueue(): Promise<ValidationItem[]> {
   try {
-    const res = await fetch("/api/review/validation");
+    const res = await apiFetch("/api/review/validation");
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : (data.items ?? []);
@@ -19,7 +20,7 @@ export async function fetchValidationQueue(): Promise<ValidationItem[]> {
 
 export async function fetchMergeQueue(): Promise<MergeReviewItem[]> {
   try {
-    const res = await fetch("/api/review/merge");
+    const res = await apiFetch("/api/review/merge");
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : (data.items ?? []);
@@ -30,7 +31,7 @@ export async function fetchMergeQueue(): Promise<MergeReviewItem[]> {
 
 export async function fetchQuarantineQueue(): Promise<QuarantineCluster[]> {
   try {
-    const res = await fetch("/api/review/quarantine");
+    const res = await apiFetch("/api/review/quarantine");
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : (data.clusters ?? data.items ?? []);
@@ -39,9 +40,9 @@ export async function fetchQuarantineQueue(): Promise<QuarantineCluster[]> {
   }
 }
 
-export async function endpointExists(url: string): Promise<boolean> {
+export async function endpointExists(path: string): Promise<boolean> {
   try {
-    const res = await fetch(url, { method: "OPTIONS" });
+    const res = await fetch(apiUrl(path), { method: "OPTIONS" });
     return res.status !== 404;
   } catch {
     return false;
@@ -53,7 +54,7 @@ export async function approveValidation(
   body: { category?: string; ward?: string },
 ): Promise<boolean> {
   try {
-    const res = await fetch(`/api/review/validation/${submissionId}`, {
+    const res = await apiFetch(`/api/review/validation/${submissionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "approve", ...body }),
@@ -69,7 +70,7 @@ export async function rejectValidation(
   reason: RejectReason,
 ): Promise<boolean> {
   try {
-    const res = await fetch(`/api/review/validation/${submissionId}`, {
+    const res = await apiFetch(`/api/review/validation/${submissionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "reject", reason }),
@@ -86,7 +87,7 @@ export async function decideMerge(
   demandId?: string,
 ): Promise<boolean> {
   try {
-    const res = await fetch(`/api/review/merge/${submissionId}`, {
+    const res = await apiFetch(`/api/review/merge/${submissionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ decision, demandId, actorId: "reviewer" }),
@@ -102,7 +103,7 @@ export async function decideQuarantine(
   action: "release" | "reject",
 ): Promise<boolean> {
   try {
-    const res = await fetch(`/api/review/quarantine/${submissionId}`, {
+    const res = await apiFetch(`/api/review/quarantine/${submissionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action }),
@@ -115,7 +116,7 @@ export async function decideQuarantine(
 
 export async function simulateAttack(): Promise<boolean> {
   try {
-    const res = await fetch("/api/dev/simulate-attack", { method: "POST" });
+    const res = await apiFetch("/api/dev/simulate-attack", { method: "POST" });
     return res.ok;
   } catch {
     return false;
@@ -124,7 +125,7 @@ export async function simulateAttack(): Promise<boolean> {
 
 export async function fetchRoutingQueue(): Promise<any[]> {
   try {
-    const res = await fetch("/api/review/routing");
+    const res = await apiFetch("/api/review/routing");
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : (data.items ?? []);
@@ -135,7 +136,7 @@ export async function fetchRoutingQueue(): Promise<any[]> {
 
 export async function fetchTranscriptionQueue(): Promise<any[]> {
   try {
-    const res = await fetch("/api/review/transcription");
+    const res = await apiFetch("/api/review/transcription");
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : (data.items ?? []);
@@ -146,7 +147,7 @@ export async function fetchTranscriptionQueue(): Promise<any[]> {
 
 export async function routeApprove(demandId: string, authorityId: number): Promise<boolean> {
   try {
-    const res = await fetch(`/api/demands/${demandId}/route-approve`, {
+    const res = await apiFetch(`/api/demands/${demandId}/route-approve`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ authorityId, actorId: "reviewer" }),
@@ -159,7 +160,7 @@ export async function routeApprove(demandId: string, authorityId: number): Promi
 
 export async function transcribeSubmission(submissionId: string, text: string): Promise<boolean> {
   try {
-    const res = await fetch(`/api/submissions/${submissionId}/transcribe`, {
+    const res = await apiFetch(`/api/submissions/${submissionId}/transcribe`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, actorId: "reviewer" }),
@@ -172,7 +173,7 @@ export async function transcribeSubmission(submissionId: string, text: string): 
 
 export async function fetchStaleAuthorities(): Promise<any[]> {
   try {
-    const res = await fetch("/api/review/stale-authorities");
+    const res = await apiFetch("/api/review/stale-authorities");
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : (data.items ?? []);

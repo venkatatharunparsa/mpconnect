@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-client";
 import { useCallback, useEffect } from "react";
 import { t, type Lang } from "../i18n";
 
@@ -22,7 +23,7 @@ export function useVerificationPoll(
 ) {
   const fetchVerifications = useCallback(async () => {
     if (!citizenKey) return;
-    const res = await fetch(`/api/verifications?citizenKey=${encodeURIComponent(citizenKey)}`);
+    const res = await apiFetch(`/api/verifications?citizenKey=${encodeURIComponent(citizenKey)}`);
     if (!res.ok) return;
     const pending = (await res.json()) as Array<{ id: number; demandTitle: string }>;
 

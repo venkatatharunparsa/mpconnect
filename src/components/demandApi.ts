@@ -1,7 +1,8 @@
+import { apiFetch } from "@/lib/api-client";
 import type { TimelineEvent } from "./timeline/types";
-import type { Demand } from "./dashboard/types";
+import type { Demand } from "./map/types";
 
-// TODO: confirm shape with A — GET /api/demands/[id]
+// TODO: confirm shape with A â€” GET /api/demands/[id]
 export interface DemandDetailResponse {
   demand?: Demand;
   timeline?: TimelineEvent[];
@@ -11,7 +12,7 @@ export interface DemandDetailResponse {
 
 export async function fetchDemandDetail(id: string): Promise<DemandDetailResponse | null> {
   try {
-    const res = await fetch(`/api/demands/${id}`);
+    const res = await apiFetch(`/api/demands/${id}`);
     if (!res.ok) return null;
     return (await res.json()) as DemandDetailResponse;
   } catch {
@@ -22,7 +23,7 @@ export async function fetchDemandDetail(id: string): Promise<DemandDetailRespons
 export function extractDemand(data: DemandDetailResponse | null): Demand | null {
   if (!data) return null;
   if (data.demand) return data.demand;
-  // TODO: confirm shape with A — some APIs may return demand fields at root
+  // TODO: confirm shape with A â€” some APIs may return demand fields at root
   const maybe = data as unknown as Demand;
   if (maybe.id && maybe.title) return maybe;
   return null;

@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import { useEffect, useState } from "react";
 import type { ChainVerification, TimelineEvent } from "./timeline/types";
 
@@ -89,7 +90,7 @@ type ChainStatus = "loading" | "verified" | "broken" | "unavailable";
 
 async function fetchChainStatus(demandId: string): Promise<ChainVerification | null> {
   try {
-    const res = await fetch(`/api/demands/${demandId}/verify-chain`);
+    const res = await apiFetch(`/api/demands/${demandId}/verify-chain`);
     if (!res.ok) return null;
     return (await res.json()) as ChainVerification;
   } catch {
@@ -117,7 +118,7 @@ function ChainBadge({ status, brokenAt }: { status: ChainStatus; brokenAt?: numb
   }
   return (
     <div className="mb-4 rounded-lg border border-state-resolved bg-green-50 px-3 py-2 text-sm font-semibold text-state-resolved">
-      Chain verified ✓
+      Chain verified âœ“
     </div>
   );
 }
@@ -133,7 +134,7 @@ function VerificationOutcome({ event }: { event: TimelineEvent }) {
       }`}
     >
       <div className={`text-5xl ${confirmed ? "text-state-resolved" : "text-state-reopened"}`}>
-        {confirmed ? "✓" : "🚩"}
+        {confirmed ? "âœ“" : "ðŸš©"}
       </div>
       <p
         className={`mt-2 text-lg font-bold ${
@@ -141,8 +142,8 @@ function VerificationOutcome({ event }: { event: TimelineEvent }) {
         }`}
       >
         {confirmed
-          ? "Citizen verified — fix confirmed"
-          : "Citizen denied closure — publicly reopened"}
+          ? "Citizen verified â€” fix confirmed"
+          : "Citizen denied closure â€” publicly reopened"}
       </p>
       <p className="mt-1 text-sm text-slate-600">{eventLabel(event.eventType)}</p>
       {typeof event.payload.note === "string" && (
@@ -161,7 +162,7 @@ function StateChangeEvent({ event }: { event: TimelineEvent }) {
       <p className="text-xs font-medium uppercase tracking-wide text-slate-500">State change</p>
       <div className="mt-1 flex flex-wrap items-center gap-2 text-sm font-semibold">
         <span className="rounded bg-slate-100 px-2 py-0.5 capitalize">{from.replace(/_/g, " ")}</span>
-        <span className="text-slate-400">→</span>
+        <span className="text-slate-400">â†’</span>
         <span className="rounded bg-primary/10 px-2 py-0.5 capitalize text-primary">
           {to.replace(/_/g, " ")}
         </span>
@@ -187,7 +188,7 @@ function CitizenSubmissionEvent({
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
       <p className="text-sm font-medium text-slate-800">
-        {formatActor(event, publicSafe)} — {eventLabel(event.eventType)}
+        {formatActor(event, publicSafe)} â€” {eventLabel(event.eventType)}
       </p>
       {summary && <p className="mt-1 text-sm text-slate-600">{summary}</p>}
       <div className="mt-2 flex flex-wrap gap-2">
@@ -214,13 +215,13 @@ function HumanDecisionEvent({ event, publicSafe }: { event: TimelineEvent; publi
   return (
     <div className="border-l-4 border-primary py-1 pl-3">
       <p className="text-sm font-bold text-slate-900">
-        {formatActor(event, publicSafe)} — {eventLabel(event.eventType)}
+        {formatActor(event, publicSafe)} â€” {eventLabel(event.eventType)}
       </p>
       {typeof event.payload.note === "string" && (
         <p className="mt-1 text-sm text-slate-700">{event.payload.note}</p>
       )}
       {typeof event.payload.authorityName === "string" && (
-        <p className="mt-1 text-sm text-slate-600">→ {event.payload.authorityName}</p>
+        <p className="mt-1 text-sm text-slate-600">â†’ {event.payload.authorityName}</p>
       )}
       <time className="mt-1 block text-xs text-slate-500">{formatTime(event.occurredAt)}</time>
     </div>
@@ -275,9 +276,9 @@ export function Timeline({ demandId, events: eventsProp, publicSafe = false }: T
     let cancelled = false;
     (async () => {
       setLoading(true);
-      // TODO: confirm shape with A — timeline may come from GET /api/demands/[id]
+      // TODO: confirm shape with A â€” timeline may come from GET /api/demands/[id]
       try {
-        const res = await fetch(`/api/demands/${demandId}`);
+        const res = await apiFetch(`/api/demands/${demandId}`);
         if (res.ok) {
           const data = await res.json();
           const list: TimelineEvent[] = data.timeline ?? data.events ?? [];
@@ -314,7 +315,7 @@ export function Timeline({ demandId, events: eventsProp, publicSafe = false }: T
     };
   }, [demandId]);
 
-  // Oldest-first: read the story as it unfolded (genesis → present).
+  // Oldest-first: read the story as it unfolded (genesis â†’ present).
   const sorted = [...events].sort(
     (a, b) => new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime(),
   );

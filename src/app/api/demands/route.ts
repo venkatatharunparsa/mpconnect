@@ -36,6 +36,7 @@ export async function GET() {
         createdAt: d.createdAt,
         updatedAt: d.updatedAt,
         isEscalated: escalatedSet.has(d.id),
+        authorityId: d.authorityId,
       })),
     );
   } catch (err) {

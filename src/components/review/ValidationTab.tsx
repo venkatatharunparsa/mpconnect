@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TAXONOMY } from "@/server/core/taxonomy";
+import { TAXONOMY } from "@mpconnect/shared";
 import { approveValidation, rejectValidation } from "./api";
 import { REJECT_REASONS, type ValidationItem } from "./types";
 
@@ -123,11 +123,6 @@ export function ValidationTab({ items, loading, onRemove, onError }: ValidationT
                   {item.rawText?.slice(0, 120) ?? field(item, "summaryEn") ?? "No transcript"}
                 </p>
                 <div className="mt-1 flex flex-wrap gap-2 text-xs">
-                  {item.channel === "news" && (
-                    <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-900 font-semibold uppercase">
-                      News Ingest
-                    </span>
-                  )}
                   {(item.needsHuman || item.extraction?.needsHuman) && (
                     <span className="rounded bg-amber-100 px-2 py-0.5 text-amber-900">
                       needs human

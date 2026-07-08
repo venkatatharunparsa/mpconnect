@@ -1,5 +1,5 @@
-// Override DATABASE_URL for local testing before importing DB modules
-process.env.DATABASE_URL = "postgresql://postgres@localhost:5432/mpconnect";
+// Use configured database URL
+process.env.DATABASE_URL ??= "postgresql://postgres@localhost:5432/mpconnect";
 
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { db } from "@/server/db";

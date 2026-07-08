@@ -1,4 +1,4 @@
-process.env.DATABASE_URL = "postgresql://postgres@localhost:5432/mpconnect";
+process.env.DATABASE_URL ??= "postgresql://postgres@localhost:5432/mpconnect";
 
 import { describe, it, expect } from "vitest";
 import { db } from "@/server/db";

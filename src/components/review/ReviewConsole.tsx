@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import { useCallback, useEffect, useState } from "react";
 import {
   endpointExists,
@@ -51,9 +52,8 @@ export function ReviewConsole() {
     setRouting(r);
     setTranscription(t);
     setStaleAuthorities(s);
-    // TODO: confirm shape with A — demand search for attach
     try {
-      const res = await fetch("/api/demands");
+      const res = await apiFetch("/api/demands");
       if (res.ok) {
         const data = await res.json();
         const list = Array.isArray(data) ? data : (data.demands ?? []);
@@ -336,10 +336,10 @@ export function ReviewConsole() {
                     <div>
                       <strong>Citation Link:</strong>{" "}
                       <a
-                        href={auth.sourceUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-primary hover:underline font-medium break-all"
+                         href={auth.sourceUrl}
+                         target="_blank"
+                         rel="noreferrer"
+                         className="text-primary hover:underline font-medium break-all"
                       >
                         {auth.sourceUrl}
                       </a>

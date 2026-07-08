@@ -1,7 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { queryHelpDesk } from "@/server/services/helpdesk/helpdesk";
 
 describe("helpdesk", () => {
+  let originalKey = process.env.GEMINI_API_KEY;
+  beforeEach(() => {
+    process.env.GEMINI_API_KEY = "mock";
+  });
+  afterEach(() => {
+    process.env.GEMINI_API_KEY = originalKey;
+  });
+
   it("answers scheme questions using the corpus keywords when GEMINI_API_KEY is mock/empty", async () => {
     const res1 = await queryHelpDesk({ question: "tell me about NTR Bharosa pension scheme" });
     expect(res1.hasVerifiedAnswer).toBe(true);

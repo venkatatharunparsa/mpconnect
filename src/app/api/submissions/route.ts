@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { and, count, eq, gte } from "drizzle-orm";
+import { and, count, eq, gte, desc } from "drizzle-orm";
 import { db } from "@/server/db";
 import { submissions } from "@/server/db/schema";
 import { jsonOk, jsonError, handleApiError, parseJsonBody } from "@/server/services/intake/api-helpers";
@@ -119,4 +119,25 @@ export async function POST(req: NextRequest) {
       return handleApiError(err);
     }
   });
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const citizenKey = searchParams.get("citizenKey");
+    
+    if (!citizenKey) {
+      return jsonError("citizenKey query param is required", 400);
+    }
+    
+    const rows = await db
+      .select()
+      .from(submissions)
+      .where(eq(submissions.citizenKey, citizenKey))
+      .orderBy(desc(submissions.createdAt));
+      
+    return jsonOk(rows);
+  } catch (err) {
+    return handleApiError(err);
+  }
 }
