@@ -4,7 +4,7 @@
 
 > Code for Communities (Google × hack2skill) · PS: *People's Priorities — AI for Constituency Development Planning* · Constituency: Visakhapatnam Lok Sabha
 
-🔗 **Live demo:** `TODO_URL` · 🎬 **3-min video:** `TODO_VIDEO` · 📚 **[19 research & design documents](./docs/)**
+🔗 **Live demo:** https://mpconnect-web.vercel.app · 📚 **[19 research & design documents](./docs/)**
 
 ![MPconnect Hero Dashboard](/public/screenshots/dashboard.png)
 
@@ -34,10 +34,10 @@ A citizen in Visakhapatnam has **eight** disconnected ways to report a need — 
 
 ## Try it in 2 minutes
 
-1. Open `TODO_URL/submit` — hold the mic, speak in Telugu (or type in English). Get your reference ID.
-2. Open `TODO_URL/dashboard` — find your submission merged into a Demand on the map; open its timeline (hash-chain verified ✓).
+1. Open [mpconnect-web.vercel.app/submit](https://mpconnect-web.vercel.app/submit) — hold the mic, speak in Telugu (or type in English). Get your reference ID.
+2. Open [mpconnect-web.vercel.app/dashboard](https://mpconnect-web.vercel.app/dashboard) — find your submission merged into a Demand on the map; open its timeline (hash-chain verified ✓).
 3. Switch role to *Official* → mark a demand "work done" → switch back to *Citizen* → **deny it** → watch it publicly reopen.
-4. Open `TODO_URL/review` → press *Simulate attack* → watch 15 templated reports quarantine.
+4. Open [mpconnect-web.vercel.app/review](https://mpconnect-web.vercel.app/review) → press *Simulate attack* → watch 15 templated reports quarantine.
 
 ## How it works
 
@@ -68,16 +68,40 @@ Gemini multimodal API (Telugu audio/photo/text → structured extraction) · Gem
 | Authority registry (cited) | Bhashini ASR (production Telugu) | State-scale sharding, DIGIT interop |
 | Abuse quarantine | DLT SMS gateway | Citizen-verified stats as public data |
 
+## Bypassing AI Calls (Evaluation / Keyless Mode)
+
+If you are running the application in an automated evaluation environment or do not have a Google AI Studio API key, you can bypass real Gemini API calls entirely.
+
+The application has a built-in **`MockAiClient`** that automatically triggers if:
+* `GEMINI_API_KEY` is empty, not set, or starts with `"mock"`.
+
+When Mock Mode is active:
+* **Citizen Intake**: Heuristic regex rules identify categories (`streetlights`, `drainage`, `garbage`, `water_supply`, etc.) from Telugu/English words and simulate Gemini's structured output.
+* **Embeddings & Matcher**: Generates deterministic 768-dimensional mock embedding vectors, allowing similarity-based duplicate merging and hotspot clustering to still work locally.
+* **Data-Fusion**: Narrates mock comparison details without API calls.
+
+---
+
 ## The ground truth (our unfair advantage)
 
 The [`docs/`](./docs/) folder holds **19 documents**: field research on Visakhapatnam's actual grievance systems, a source-cited authority KB, the political-reality analysis (why govt platforms die each election cycle — and how this one survives), a seven-layer abuse defense, full FRD/NFR/TDD, and the phased execution plan to production. This prototype is the thinnest working slice of a system designed to survive contact with Indian political reality.
 
-## Run locally
+## Run locally (Monorepo)
 
 ```bash
+# 1. Install dependencies for all projects (monorepo)
 pnpm install
-cp .env.example .env.local   # fill DATABASE_URL, GEMINI_API_KEY, NEXT_PUBLIC_GOOGLE_MAPS_KEY
-pnpm db:push && pnpm seed
+
+# 2. Add local configuration files
+# Edit apps/api/.env.local (fill DATABASE_URL and GEMINI_API_KEY)
+# Edit apps/web/.env.local (fill NEXT_PUBLIC_API_URL and NEXT_PUBLIC_GOOGLE_MAPS_KEY)
+
+# 3. Apply schema and seed initial database
+pnpm db:push
+pnpm seed
+pnpm corpus:seed  # Seeds full demo data (88 complaints, priorities, mapping data)
+
+# 4. Start all applications concurrently
 pnpm dev
 ```
 

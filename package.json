@@ -13,6 +13,7 @@
     "db:studio": "pnpm --filter @mpconnect/api db:studio",
     "db:reset": "pnpm --filter @mpconnect/api db:reset",
     "seed": "pnpm --filter @mpconnect/api seed",
+    "corpus:seed": "pnpm --filter @mpconnect/api exec tsx seed/corpus.ts",
     "demo:reset": "pnpm --filter @mpconnect/api demo:reset",
     "telegram:webhook": "pnpm --filter @mpconnect/api telegram:webhook",
     "test": "pnpm --filter @mpconnect/api test"
