@@ -5,33 +5,57 @@ import { usePathname } from "next/navigation";
 import { useApp } from "./AppProvider";
 import { shellT } from "./labels";
 
-const PRIMARY = [
-  { href: "/", labelKey: "home" as const },
-  { href: "/map", labelKey: "map" as const },
-  { href: "/submit", labelKey: "reportIssue" as const },
-  { href: "/dashboard", labelKey: "priorities" as const },
-];
+type LabelKey =
+  | "dashboard"
+  | "issues"
+  | "register"
+  | "map"
+  | "profile"
+  | "workspace"
+  | "menuReview"
+  | "menuVoice"
+  | "menuVision";
 
-const STAFF = [
-  { href: "/review", labelKey: "menuReview" as const },
-  { href: "/voice", labelKey: "menuVoice" as const },
-  { href: "/vision", labelKey: "menuVision" as const },
-];
+function navForRole(role: ReturnType<typeof useApp>["role"]): { href: string; labelKey: LabelKey }[] {
+  if (role === "mp") {
+    return [
+      { href: "/mp", labelKey: "dashboard" },
+      { href: "/mp/issues", labelKey: "issues" },
+      { href: "/mp/map", labelKey: "map" },
+      { href: "/mp/profile", labelKey: "profile" },
+    ];
+  }
+  if (role === "official") {
+    return [
+      { href: "/authority", labelKey: "dashboard" },
+      { href: "/authority/workspace", labelKey: "workspace" },
+      { href: "/authority/issues", labelKey: "issues" },
+      { href: "/authority/map", labelKey: "map" },
+      { href: "/authority/profile", labelKey: "profile" },
+    ];
+  }
+  return [
+    { href: "/user", labelKey: "dashboard" },
+    { href: "/user/issues", labelKey: "issues" },
+    { href: "/user/register", labelKey: "register" },
+    { href: "/user/map", labelKey: "map" },
+    { href: "/user/profile", labelKey: "profile" },
+  ];
+}
 
 function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  if (href === "/dashboard") return pathname.startsWith("/dashboard");
-  if (href === "/map") return pathname.startsWith("/map");
+  if (href === "/mp" || href === "/user" || href === "/authority") return pathname === href;
   return pathname.startsWith(href);
 }
 
 export function DesktopNav() {
   const pathname = usePathname() ?? "/";
-  const { locale } = useApp();
+  const { locale, role } = useApp();
+  const nav = navForRole(role);
 
   return (
     <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex" aria-label="Main">
-      {PRIMARY.map((item) => {
+      {nav.map((item) => {
         const active = isActive(pathname, item.href);
         return (
           <Link
@@ -45,16 +69,6 @@ export function DesktopNav() {
           </Link>
         );
       })}
-      <span className="mx-2 h-4 w-px bg-white/20" aria-hidden />
-      {STAFF.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="rounded-lg px-3 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-white"
-        >
-          {shellT(item.labelKey, locale)}
-        </Link>
-      ))}
     </nav>
   );
 }

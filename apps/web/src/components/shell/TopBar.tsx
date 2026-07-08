@@ -9,27 +9,36 @@ import { IconBack, IconMenu, IconMic } from "./icons";
 import { shellT } from "./labels";
 import { SideMenu } from "./SideMenu";
 
+function dashboardHref(role: ReturnType<typeof useApp>["role"]) {
+  if (role === "citizen") return "/user";
+  if (role === "official") return "/authority";
+  return "/mp";
+}
+
 function titleForPath(pathname: string, locale: ReturnType<typeof useApp>["locale"]) {
   if (pathname === "/") return null;
-  if (pathname.startsWith("/submit")) return shellT("reportIssue", locale);
-  if (pathname.startsWith("/dashboard")) return shellT("priorities", locale);
+  if (pathname.startsWith("/submit")) return shellT("register", locale);
+  if (pathname.startsWith("/user")) return pathname.includes("/register") ? shellT("register", locale) : shellT("dashboard", locale);
+  if (pathname.startsWith("/authority")) return pathname.includes("/workspace") ? shellT("workspace", locale) : shellT("dashboard", locale);
+  if (pathname.startsWith("/mp")) return pathname.includes("/issues") ? shellT("issues", locale) : shellT("dashboard", locale);
+  if (pathname.startsWith("/dashboard")) return shellT("dashboard", locale);
   if (pathname.startsWith("/map")) return shellT("map", locale);
-  if (pathname.startsWith("/p/")) return shellT("priorities", locale);
+  if (pathname.startsWith("/p/")) return shellT("issues", locale);
   if (pathname.startsWith("/review")) return shellT("menuReview", locale);
   if (pathname.startsWith("/voice")) return shellT("menuVoice", locale);
-  if (pathname.startsWith("/vision")) return shellT("menuVision", locale);
+  if (pathname.startsWith("/vision")) return shellT("profile", locale);
   return "MPconnect";
 }
 
-const ROOT_ROUTES = ["/", "/dashboard", "/map", "/vision"];
+const ROOT_ROUTES = ["/", "/user", "/authority", "/mp", "/dashboard", "/map", "/vision", "/review"];
 
 export function TopBar() {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
-  const { locale, toggleMenu } = useApp();
+  const { locale, toggleMenu, role } = useApp();
   const title = titleForPath(pathname, locale);
   const onRoot = ROOT_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}?`));
-  const showBack = !onRoot && !pathname.startsWith("/submit");
+  const showBack = !onRoot && !pathname.startsWith("/submit") && !pathname.includes("/register");
 
   return (
     <>
@@ -60,7 +69,7 @@ export function TopBar() {
               <h1 className="truncate text-sm font-bold tracking-wide lg:hidden">{title}</h1>
             ) : null}
             <Link
-              href="/"
+              href={dashboardHref(role)}
               className={`block truncate font-bold tracking-wide text-white hover:text-white/90 ${
                 title && pathname !== "/" ? "hidden lg:block" : "text-sm lg:text-base"
               }`}
@@ -73,13 +82,15 @@ export function TopBar() {
 
           <div className="ml-auto flex shrink-0 items-center gap-2 lg:gap-3">
             <LangToggle />
-            <Link
-              href="/submit"
-              className="hidden items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-bold text-white shadow-fab transition-transform hover:scale-[1.02] lg:inline-flex"
-            >
-              <IconMic className="h-4 w-4" />
-              {shellT("startNow", locale)}
-            </Link>
+            {role === "citizen" && (
+              <Link
+                href="/user/register"
+                className="hidden items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-bold text-white shadow-fab transition-transform hover:scale-[1.02] lg:inline-flex"
+              >
+                <IconMic className="h-4 w-4" />
+                {shellT("startNow", locale)}
+              </Link>
+            )}
           </div>
         </div>
       </header>

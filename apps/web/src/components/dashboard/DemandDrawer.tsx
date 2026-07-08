@@ -40,17 +40,38 @@ function EvidenceTab({ demandId }: { demandId: string }) {
   const [data, setData] = useState<EvidenceResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [available, setAvailable] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      // TODO: confirm shape with A — GET /api/demands/[id]/evidence
-      const res = await fetchJson<EvidenceResponse>(`/api/demands/${demandId}/evidence`);
-      if (!cancelled) {
-        setAvailable(res != null);
-        setData(res);
-        setLoading(false);
+      setError(null);
+      setAvailable(false);
+      setData(null);
+
+      // If the backend is slow/broken in dev, don't keep the UI in a "waiting" state.
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 8000);
+
+      try {
+        const res = await fetch(apiUrl(`/api/demands/${demandId}/evidence`), { signal: controller.signal });
+        if (cancelled) return;
+
+        if (!res.ok) {
+          setError(`Evidence unavailable (API error ${res.status}).`);
+          return;
+        }
+
+        const json = (await res.json()) as EvidenceResponse;
+        setData(json);
+        setAvailable(!!json?.rows?.length);
+      } catch (e) {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : "Evidence request failed.");
+      } finally {
+        window.clearTimeout(timeout);
+        if (!cancelled) setLoading(false);
       }
     })();
     return () => {
@@ -65,7 +86,7 @@ function EvidenceTab({ demandId }: { demandId: string }) {
   if (!available || !data?.rows?.length) {
     return (
       <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-        Evidence panel — waiting on GET /api/demands/[id]/evidence
+        {error ? error : "Evidence not available for this demand yet."}
       </div>
     );
   }
@@ -248,19 +269,20 @@ export function DemandDrawer({ demand, open, onClose, role, locale }: DemandDraw
         onClick={onClose}
         aria-label="Close drawer"
       />
-      <aside className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-white shadow-xl sm:top-14 sm:h-[calc(100%-3.5rem)]">
-        <div className="flex items-start justify-between border-b border-slate-200 p-4">
+      <aside className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl sm:top-14 sm:h-[calc(100%-3.5rem)]">
+        <div className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white p-5">
+          <div className="flex items-start justify-between">
           <div className="min-w-0 pr-4">
-            <h2 className="text-lg font-bold leading-snug text-slate-900">{demand.title}</h2>
+            <h2 className="text-xl font-bold leading-snug text-slate-900">{demand.title}</h2>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <StateBadge state={demand.state} />
               {demand.ward && (
-                <span className="text-sm text-slate-600">
+                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
                   {t("ward", locale)}: {demand.ward}
                 </span>
               )}
             </div>
-            <p className="mt-2 text-lg font-bold text-primary">
+            <p className="mt-3 text-2xl font-extrabold text-primary">
               {t("affects", locale)} {demand.affectedCount.toLocaleString()}{" "}
               {t("citizens", locale)}
             </p>
@@ -273,6 +295,7 @@ export function DemandDrawer({ demand, open, onClose, role, locale }: DemandDraw
           >
             ✕
           </button>
+        </div>
         </div>
 
         <div className="border-b border-slate-200 px-4">
@@ -295,22 +318,34 @@ export function DemandDrawer({ demand, open, onClose, role, locale }: DemandDraw
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
-          <dl className="mb-4 grid grid-cols-2 gap-2 text-sm">
-            <div>
-              <dt className="text-slate-500">{t("category", locale)}</dt>
-              <dd className="font-medium">{demand.category}</dd>
+          <dl className="mb-5 grid grid-cols-2 gap-2 text-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {t("category", locale)}
+              </dt>
+              <dd className="mt-1 font-semibold text-slate-900">{demand.category}</dd>
             </div>
-            <div>
-              <dt className="text-slate-500">{t("urgency", locale)}</dt>
-              <dd className="font-medium capitalize">{demand.urgency}</dd>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {t("urgency", locale)}
+              </dt>
+              <dd className="mt-1 font-semibold capitalize text-slate-900">{demand.urgency}</dd>
             </div>
-            <div>
-              <dt className="text-slate-500">{t("score", locale)}</dt>
-              <dd className="font-medium tabular-nums">{demand.rankScore.toFixed(1)}</dd>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {t("score", locale)}
+              </dt>
+              <dd className="mt-1 font-semibold tabular-nums text-slate-900">
+                {demand.rankScore.toFixed(1)}
+              </dd>
             </div>
-            <div>
-              <dt className="text-slate-500">{t("state", locale)}</dt>
-              <dd className="font-medium capitalize">{demand.state.replace(/_/g, " ")}</dd>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {t("state", locale)}
+              </dt>
+              <dd className="mt-1 font-semibold capitalize text-slate-900">
+                {demand.state.replace(/_/g, " ")}
+              </dd>
             </div>
           </dl>
 

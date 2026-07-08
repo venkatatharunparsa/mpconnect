@@ -4,7 +4,7 @@ loadEnvConfig(process.cwd());
 import { POST } from "../src/app/api/submissions/route";
 import { NextRequest } from "next/server";
 import { db } from "../src/server/db";
-import { submissions, events } from "../src/server/db/schema";
+import { submissions, events, demands } from "../src/server/db/schema";
 import { count, eq, like } from "drizzle-orm";
 import { createHash } from "crypto";
 import * as fs from "fs";
@@ -87,13 +87,22 @@ const streetlightTemplates = [
 ];
 
 async function main() {
+  const force = process.argv.includes("--force");
+
+  if (force) {
+    console.log("Force mode: clearing submissions/demands/events…");
+    await db.delete(events);
+    await db.delete(submissions);
+    await db.delete(demands);
+  }
+
   console.log("Checking if synthetic corpus already exists...");
   const [existing] = await db
     .select({ count: count() })
     .from(submissions)
     .where(like(submissions.citizenKey, "SYN-%"));
 
-  if (existing && existing.count > 0) {
+  if (!force && existing && existing.count > 0) {
     console.log(`Corpus already seeded (${existing.count} SYN- records). Skipping.`);
     process.exit(0);
   }

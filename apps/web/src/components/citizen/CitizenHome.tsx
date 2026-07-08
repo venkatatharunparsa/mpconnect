@@ -132,7 +132,7 @@ export function CitizenHome() {
           {shellT("voiceHint", locale)}
         </p>
         <Link
-          href="/submit"
+          href="/user/register"
           className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white shadow-fab transition-transform hover:scale-[1.02] active:scale-[0.98]"
         >
           <span className="text-lg">🎙</span>
@@ -169,7 +169,7 @@ export function CitizenHome() {
       </div>
 
       <Link
-        href="/map"
+        href="/user/map"
         className="mt-3 flex items-center gap-3 rounded-card bg-primary/10 px-4 py-3 transition-colors hover:bg-primary/15"
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-lg">
@@ -188,7 +188,7 @@ export function CitizenHome() {
       <section className="mt-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900">{shellT("yourRecent", locale)}</h2>
-          <Link href="/submit" className="text-xs font-semibold text-primary">
+          <Link href="/user/register" className="text-xs font-semibold text-primary">
             {shellT("checkRefId", locale)}
           </Link>
         </div>
@@ -232,7 +232,7 @@ export function CitizenHome() {
       <section className="mt-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900">{shellT("trending", locale)}</h2>
-          <Link href="/dashboard" className="text-xs font-semibold text-primary">
+          <Link href="/user/issues" className="text-xs font-semibold text-primary">
             {shellT("viewAll", locale)}
           </Link>
         </div>
