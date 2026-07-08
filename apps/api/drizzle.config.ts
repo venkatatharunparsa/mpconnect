@@ -1,4 +1,5 @@
 import { defineConfig } from "drizzle-kit";
+// @ts-ignore
 import { loadEnvConfig } from "@next/env";
 
 loadEnvConfig(process.cwd());
