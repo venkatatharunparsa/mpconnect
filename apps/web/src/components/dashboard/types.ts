@@ -81,13 +81,22 @@ export interface EvidenceResponse {
   [key: string]: unknown;
 }
 
-// TODO: confirm shape with A
+// TODO: confirm shape with A — matches GET /api/demands/[id]/mplads-pack
 export interface MpladsPack {
+  workTitle?: string;
   title?: string;
   description?: string;
+  location?: string;
+  estimatedBeneficiaries?: string;
   beneficiaries?: number;
   costBand?: string;
+  earmarkNote?: string;
   scstEarmark?: string;
+  statutoryClocks?: {
+    rejectionNoticeDays: number;
+    sanctionDays: number;
+    source: string;
+  };
   clocks?: { label: string; days: number }[];
   watermark?: string;
   [key: string]: unknown;

@@ -142,7 +142,6 @@ function MpladsTab({ demandId }: { demandId: string }) {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      // TODO: confirm shape with A — GET /api/demands/[id]/mplads-pack
       const res = await fetchJson<MpladsPack>(`/api/demands/${demandId}/mplads-pack`);
       if (!cancelled) {
         setPack(res);
@@ -161,38 +160,86 @@ function MpladsTab({ demandId }: { demandId: string }) {
   if (!pack) {
     return (
       <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-        MPLADS pack — waiting on GET /api/demands/[id]/mplads-pack
+        MPLADS pack not available for this demand yet.
       </div>
     );
   }
 
+  const title = pack.workTitle ?? pack.title ?? "MPLADS recommendation";
+  const beneficiaries = pack.estimatedBeneficiaries ?? (pack.beneficiaries != null ? String(pack.beneficiaries) : null);
+  const earmark = pack.earmarkNote ?? pack.scstEarmark;
+  const clocks =
+    pack.clocks ??
+    (pack.statutoryClocks
+      ? [
+          { label: "Rejection notice", days: pack.statutoryClocks.rejectionNoticeDays },
+          { label: "Sanction", days: pack.statutoryClocks.sanctionDays },
+        ]
+      : []);
+
   return (
-    <div className="relative rounded-lg border border-slate-200 bg-white p-4">
+    <div className="space-y-4">
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <h4 className="text-base font-semibold leading-snug text-slate-900">{title}</h4>
+        {pack.description && (
+          <p className="mt-3 text-sm leading-relaxed text-slate-700">{pack.description}</p>
+        )}
+
+        <dl className="mt-4 space-y-3 text-sm">
+          {pack.location && (
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Location</dt>
+              <dd className="mt-1 font-medium text-slate-900">{pack.location}</dd>
+            </div>
+          )}
+          {beneficiaries && (
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Estimated beneficiaries
+              </dt>
+              <dd className="mt-1 font-medium text-slate-900">{beneficiaries}</dd>
+            </div>
+          )}
+          {pack.costBand && (
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Cost band</dt>
+              <dd className="mt-1 font-medium text-slate-900">{pack.costBand}</dd>
+            </div>
+          )}
+        </dl>
+
+        {clocks.length > 0 && (
+          <ul className="mt-4 space-y-1 border-t border-slate-100 pt-3 text-sm text-slate-700">
+            {clocks.map((c) => (
+              <li key={c.label}>
+                {c.label}: <strong>{c.days} days</strong> (statutory)
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {pack.statutoryClocks?.source && (
+          <a
+            href={pack.statutoryClocks.source}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block text-xs text-primary underline"
+          >
+            MPLADS guidelines source
+          </a>
+        )}
+      </div>
+
+      {earmark && (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+          {earmark}
+        </p>
+      )}
+
       {pack.watermark && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl font-bold text-slate-100 rotate-[-12deg]">
+        <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
           {pack.watermark}
-        </div>
-      )}
-      <h4 className="font-semibold">{pack.title ?? "MPLADS recommendation"}</h4>
-      {pack.description && <p className="mt-2 text-sm text-slate-600">{pack.description}</p>}
-      {pack.beneficiaries != null && (
-        <p className="mt-2 text-sm">
-          Beneficiaries: <strong>{pack.beneficiaries.toLocaleString()}</strong>
         </p>
-      )}
-      {pack.costBand && (
-        <p className="text-sm">
-          Cost band: <strong>{pack.costBand}</strong>
-        </p>
-      )}
-      {pack.clocks && pack.clocks.length > 0 && (
-        <ul className="mt-3 space-y-1 text-sm">
-          {pack.clocks.map((c) => (
-            <li key={c.label}>
-              {c.label}: <strong>{c.days} days</strong> (statutory)
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   );
