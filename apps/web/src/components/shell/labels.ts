@@ -1,0 +1,71 @@
+import type { UiLocale } from "./AppProvider";
+
+const STR = {
+  constituency: { en: "Visakhapatnam Lok Sabha", te: "విశాఖపట్నం లోక్‌సభ" },
+  constituencyShort: { en: "Visakhapatnam", te: "విశాఖపట్నం" },
+  welcome: { en: "Welcome", te: "స్వాగతం" },
+  citizen: { en: "Citizen", te: "పౌరుడు" },
+  shareNeeds: { en: "Share what your area needs", te: "మీ ప్రాంతానికి ఏమి కావాలో చెప్పండి" },
+  voiceHint: {
+    en: "Press the mic to report an issue in Telugu or English — voice, text, or photo.",
+    te: "తెలుగు లేదా ఇంగ్లీష్‌లో సమస్యను చెప్పండి — వాయిస్, టెక్స్ట్ లేదా ఫోటో.",
+  },
+  startNow: { en: "Start now", te: "ఇప్పుడే ప్రారంభించండి" },
+  submissions: { en: "Submissions", te: "సమర్పణలు" },
+  pending: { en: "Pending", te: "పెండింగ్" },
+  actionRequired: { en: "Action required", te: "చర్య అవసరం" },
+  topCategory: { en: "Top category", te: "అగ్ర వర్గం" },
+  yourRecent: { en: "Your recent submissions", te: "మీ ఇటీవలి సమర్పణలు" },
+  trending: { en: "Trending in your area", te: "మీ ప్రాంతంలో ట్రెండింగ్" },
+  viewAll: { en: "View all", te: "అన్నీ చూడండి" },
+  noReports: { en: "No reports yet", te: "ఇంకా నివేదికలు లేవు" },
+  noReportsHint: {
+    en: "Tap the mic below to tell us what your neighbourhood needs.",
+    te: "మీ పరిసరాలకు ఏమి కావాలో చెప్పడానికి క్రింద మైక్ నొక్కండి.",
+  },
+  peopleReported: { en: "people reported", te: "మంది నివేదించారు" },
+  home: { en: "Home", te: "హోమ్" },
+  hotspots: { en: "Hotspots", te: "హాట్‌స్పాట్‌లు" },
+  priorities: { en: "Priorities", te: "ప్రాధాన్యతలు" },
+  profile: { en: "Profile", te: "ప్రొఫైల్" },
+  constituencyOverview: { en: "Constituency overview", te: "నియోజకవర్గ అవలోకనం" },
+  reportIssue: { en: "Report issue", te: "సమస్య నివేదించండి" },
+  back: { en: "Back", te: "వెనక్కి" },
+  totalSubmissions: { en: "Total submissions", te: "మొత్తం సమర్పణలు" },
+  activeClusters: { en: "Active clusters", te: "సక్రియ క్లస్టర్లు" },
+  last7Days: { en: "Last 7 days", te: "గత 7 రోజులు" },
+  viewPriorities: { en: "View priorities", te: "ప్రాధాన్యతలు చూడండి" },
+  hotspotMap: { en: "Hotspot map", te: "హాట్‌స్పాట్ మ్యాప్" },
+  refreshData: { en: "Refresh data", te: "డేటా రిఫ్రెష్" },
+  topPriorities: { en: "Top priorities", te: "అగ్ర ప్రాధాన్యతలు" },
+  reports: { en: "reports", te: "నివేదికలు" },
+  theIssue: { en: "The issue", te: "సమస్య" },
+  priorityMatrix: { en: "Priority score matrix", te: "ప్రాధాన్య స్కోర్ మ్యాట్రిక్స్" },
+  affectedArea: { en: "Affected area", te: "ప్రభావిత ప్రాంతం" },
+  openMap: { en: "Open map", te: "మ్యాప్ తెరవండి" },
+  imAffectedToo: { en: "I'm affected too", te: "నాకూ ప్రభావం ఉంది" },
+  citizensReported: { en: "citizens reported this", te: "పౌరులు నివేదించారు" },
+  getUpdates: { en: "Get updates", te: "నవీకరణలు పొందండి" },
+  menuVision: { en: "Vision & docs", te: "దృష్టి & పత్రాలు" },
+  menuReview: { en: "Staff review", te: "సిబ్బంది సమీక్ష" },
+  menuVoice: { en: "Voice agent", te: "వాయిస్ ఏజెంట్" },
+  menuMpDashboard: { en: "MP command center", te: "ఎంపీ కమాండ్ సెంటర్" },
+  realTimeHealth: {
+    en: "Real-time civic engagement health",
+    te: "రియల్-టైమ్ పౌర సంబంధ ఆరోగ్యం",
+  },
+  hotspotBanner: {
+    en: "Hotspot visualization — submission density across the constituency",
+    te: "హాట్‌స్పాట్ దృశ్యం — నియోజకవర్గంలో సమర్పణ సాంద్రత",
+  },
+  checkRefId: { en: "Check reference ID", te: "రిఫరెన్స్ ID తనిఖీ" },
+  statusSubmitted: { en: "Submitted", te: "సమర్పించబడింది" },
+  statusProcessing: { en: "Processing", te: "ప్రాసెస్ అవుతోంది" },
+  statusClustered: { en: "Clustered", te: "క్లస్టర్ అయింది" },
+} as const;
+
+export type ShellLabelKey = keyof typeof STR;
+
+export function shellT(key: ShellLabelKey, locale: UiLocale): string {
+  return STR[key][locale];
+}

@@ -1,10 +1,12 @@
 {
-  "name": "mpconnect",
+  "name": "@mpconnect/api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:web": "pnpm --filter @mpconnect/web dev",
     "build": "next build",
+    "build:web": "pnpm --filter @mpconnect/web build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
