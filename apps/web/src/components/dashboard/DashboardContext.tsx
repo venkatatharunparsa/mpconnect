@@ -43,7 +43,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       setRoleState(next);
       setAppRole(next);
       const root =
-        next === "citizen" ? "/user" : next === "official" ? "/authority" : "/mp";
+        next === "citizen"
+          ? "/user"
+          : next === "official"
+            ? typeof window !== "undefined" && localStorage.getItem("mpconnect:authorityId")
+              ? "/authority"
+              : "/authority/pick"
+            : "/mp";
       router.replace(root, { scroll: false });
     },
     [router, setAppRole],

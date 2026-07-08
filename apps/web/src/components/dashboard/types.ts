@@ -35,6 +35,7 @@ export interface Demand {
   urgency: string;
   state: DemandState;
   visibility?: string;
+  authorityId?: number | null;
   rankScore: number;
   rankBreakdown?: RankBreakdown | null;
   falseClosureCount?: number;

@@ -29,9 +29,9 @@ function menuLinks(role: ReturnType<typeof useApp>["role"]): MenuLink[] {
   }
   if (role === "official") {
     return [
-      { href: "/authority", labelKey: "issues" },
+      { href: "/authority", labelKey: "dashboard" },
       { href: "/authority/workspace", labelKey: "workspace" },
-      { href: "/authority/issues", labelKey: "dashboard" },
+      { href: "/authority/issues", labelKey: "issues" },
       { href: "/authority/map", labelKey: "map" },
       { href: "/authority/profile", labelKey: "profile" },
     ];

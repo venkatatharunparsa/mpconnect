@@ -113,9 +113,10 @@ export function ProfileView({ role }: { role: AppRole }) {
     }
     if (role === "official") {
       return [
-        { href: "/authority", label: "Dashboard", hint: "Constituency overview" },
-        { href: "/authority/workspace", label: "Workspace", hint: "Routing & closure actions" },
-        { href: "/authority/issues", label: "Issue queue", hint: "Actionable items" },
+        { href: "/authority", label: "Dashboard", hint: "Your office overview" },
+        { href: "/authority/workspace", label: "Workspace", hint: "Allotted issues & actions" },
+        { href: "/authority/issues", label: "Public issues", hint: "Constituency feed (view only)" },
+        { href: "/authority/pick", label: "Switch department", hint: "Log in as a different office" },
       ];
     }
     return [

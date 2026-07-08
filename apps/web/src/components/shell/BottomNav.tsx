@@ -31,9 +31,9 @@ function navForRole(role: ReturnType<typeof useApp>["role"]): NavItem[] {
   }
   if (role === "official") {
     return [
-      { href: "/authority", labelKey: "issues", icon: IconHome },
+      { href: "/authority", labelKey: "dashboard", icon: IconStats },
       { href: "/authority/workspace", labelKey: "workspace", icon: IconHome },
-      { href: "/authority/issues", labelKey: "dashboard", icon: IconMic },
+      { href: "/authority/issues", labelKey: "issues", icon: IconMic },
       { href: "/authority/map", labelKey: "map", icon: IconMap },
       { href: "/authority/profile", labelKey: "profile", icon: IconUser },
     ];

@@ -23,8 +23,10 @@ function titleForPath(pathname: string, locale: ReturnType<typeof useApp>["local
   if (pathname.startsWith("/submit")) return shellT("register", locale);
   if (pathname.includes("/user/issues")) return shellT("dashboard", locale);
   if (pathname.startsWith("/user")) return pathname.includes("/register") ? shellT("register", locale) : shellT("issues", locale);
-  if (pathname.includes("/authority/issues")) return shellT("dashboard", locale);
-  if (pathname.startsWith("/authority")) return pathname.includes("/workspace") ? shellT("workspace", locale) : shellT("issues", locale);
+  if (pathname.includes("/authority/pick")) return "Choose department";
+  if (pathname.includes("/authority/issues")) return shellT("issues", locale);
+  if (pathname.includes("/authority/workspace")) return shellT("workspace", locale);
+  if (pathname.startsWith("/authority")) return shellT("dashboard", locale);
   if (pathname.includes("/mp/issues")) return shellT("dashboard", locale);
   if (pathname.startsWith("/mp")) return pathname.includes("/issues") ? shellT("dashboard", locale) : shellT("issues", locale);
   if (pathname.startsWith("/dashboard")) return shellT("dashboard", locale);

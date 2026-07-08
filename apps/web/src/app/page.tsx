@@ -7,7 +7,7 @@ import { useApp, type AppRole } from "@/components/shell/AppProvider";
 
 function dashboardHref(role: AppRole): string {
   if (role === "citizen") return "/user";
-  if (role === "official") return "/authority";
+  if (role === "official") return "/authority/pick";
   return "/mp";
 }
 
@@ -67,7 +67,12 @@ export default function Home() {
     if (typeof window === "undefined") return;
     const storedRole = localStorage.getItem("mpconnect:role");
     if (storedRole === "citizen" || storedRole === "official" || storedRole === "mp") {
-      router.replace(dashboardHref(storedRole));
+      if (storedRole === "official") {
+        const hasAuthority = localStorage.getItem("mpconnect:authorityId");
+        router.replace(hasAuthority ? "/authority" : "/authority/pick");
+      } else {
+        router.replace(dashboardHref(storedRole));
+      }
     }
   }, [router, searchParams]);
 
