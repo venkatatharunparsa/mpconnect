@@ -28,6 +28,16 @@ export const STRINGS = {
     thinking: "…",
     rateCapReview:
       "Your report was received — it is under human review awaiting corroboration.",
+    demoMsg1:
+      "Hi, there is a large pile of garbage causing a bad smell near MVP Colony Sector 2.",
+    demoMsg2:
+      "I have analyzed your report:\n• Category: Garbage & Sanitation\n• Location: MVP Colony Sector 2\n• Urgency: Medium\n\nI am registering this in the constituency priorities database...",
+    demoMsg3:
+      "Registered successfully! Reference ID: 6lxo1e\nYou can use this ID to track status anytime.",
+    demoMsg4:
+      "6lxo1e",
+    demoMsg5:
+      "Status Report for Priority 6lxo1e:\n• Title: Garbage pile in MVP Colony\n• Status: Assigned to Ward Officer\n• Last Update: Verification pending.",
   },
   te: {
     title: "మీ సమస్య చెప్పండి", // TODO_TE
@@ -55,7 +65,17 @@ export const STRINGS = {
     demoIdentity: "డెమో గుర్తింపు", // TODO_TE
     thinking: "…", // TODO_TE
     rateCapReview:
-      "మీ నివేదిక స్వీకరించబడింది — ధృవీకరణ కోసం మానవ సమీక్షలో ఉంది.", // TODO_TE
+      "మీ నిвеదిక స్వీకరించబడింది — ధృవీకరణ కోసం మానవ సమీక్షలో ఉంది.", // TODO_TE
+    demoMsg1:
+      "నమస్కారం, ఎంవిపి కాలనీ సెక్టార్ 2 సమీపంలో చెత్త కుప్ప పేరుకుపోయి దుర్వాసన వస్తోంది.",
+    demoMsg2:
+      "నేను మీ నివేదికను విశ్లేషించాను:\n• వర్గం: చెత్త & పారిశుధ్యం\n• స్థలం: ఎంవిపి కాలనీ సెక్టార్ 2\n• అత్యవసరం: మధ్యస్థం\n\nనేను నియోజకవర్గ ప్రాధాన్యతల డేటాబేస్‌లో దీనిని నమోదు చేస్తున్నాను...",
+    demoMsg3:
+      "విజయవంతంగా నమోదైంది! సూచన ఐడి (Reference ID): 6lxo1e\nస్థితిని తెలుసుకోవడానికి ఈ ఐడిని ఉపయోగించవచ్చు.",
+    demoMsg4:
+      "6lxo1e",
+    demoMsg5:
+      "ప్రాధాన్యత 6lxo1e యొక్క స్థితి:\n• శీర్షిక: ఎంవిపి కాలనీలో చెత్త కుప్ప\n• స్థితి: వార్డు అధికారికి కేటాయించబడింది\n• చివరి అప్‌డేట్: ధృవీకరణ పెండింగ్‌లో ఉంది.",
   },
 } as const;
 

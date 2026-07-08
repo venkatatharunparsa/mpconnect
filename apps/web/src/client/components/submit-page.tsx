@@ -6,7 +6,7 @@ import { getDemoCitizenKey } from "@/components/citizenIdentity";
 import { useApp } from "@/components/shell/AppProvider";
 import { runExtraction, submitExtracted } from "@/lib/intake";
 import { saveRecentSubmission } from "@/lib/recent-submissions";
-import { t, type Lang } from "../i18n";
+import { t, STRINGS, type Lang } from "../i18n";
 import { useVerificationPoll } from "../hooks/use-verifications";
 import { formatStatusLines, needsLocationClarify } from "../utils/submit-utils";
 import type { GeminiExtraction } from "@mpconnect/shared";
@@ -16,6 +16,8 @@ type Msg = {
   id: string;
   role: "user" | "bot";
   text: string;
+  key?: keyof (typeof STRINGS)["en"];
+  vars?: Record<string, string>;
   kind?: "safety" | "readback" | "verification" | "status";
   refId?: string;
   verificationId?: number;
@@ -55,7 +57,13 @@ function blobToBase64(blob: Blob): Promise<string> {
 export default function SubmitPage() {
   const { locale } = useApp();
   const lang: Lang = locale;
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const [messages, setMessages] = useState<Msg[]>([
+    { id: "demo-1", role: "user", text: "", key: "demoMsg1" },
+    { id: "demo-2", role: "bot", text: "", key: "demoMsg2" },
+    { id: "demo-3", role: "bot", text: "", key: "demoMsg3" },
+    { id: "demo-4", role: "user", text: "", key: "demoMsg4" },
+    { id: "demo-5", role: "bot", text: "", key: "demoMsg5", kind: "status", refId: "6lxo1e" },
+  ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [citizenKey, setCitizenKey] = useState("");
@@ -72,8 +80,8 @@ export default function SubmitPage() {
     setMessages((m) => [...m, { id: uid(), role: "bot", text, ...extra }]);
   }, []);
 
-  const addUser = useCallback((text: string) => {
-    setMessages((m) => [...m, { id: uid(), role: "user", text }]);
+  const addUser = useCallback((text: string, extra?: Partial<Msg>) => {
+    setMessages((m) => [...m, { id: uid(), role: "user", text, ...extra }]);
   }, []);
 
   useEffect(() => {
@@ -81,10 +89,10 @@ export default function SubmitPage() {
     setCitizenKey(key);
 
     if (!localStorage.getItem(`${SAFETY_PREFIX}${key}`)) {
-      addBot(t(lang, "safetyNotice"), { kind: "safety" });
+      addBot("", { kind: "safety", key: "safetyNotice" });
       localStorage.setItem(`${SAFETY_PREFIX}${key}`, "1");
     }
-  }, [addBot, lang]);
+  }, [addBot]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -97,11 +105,8 @@ export default function SubmitPage() {
       const result = await submitExtracted({ citizenKey, rawText, extraction });
       const summary =
         lang === "te" && extraction.summaryTe ? extraction.summaryTe : extraction.summaryEn;
-      let reply = t(lang, "registered", { refId: result.refId });
-      if (result.flags?.reason === "rate_cap") {
-        reply += `\n\n${t(lang, "rateCapReview")}`;
-      }
-      addBot(reply, { refId: result.refId });
+      
+      addBot("", { key: "registered", vars: { refId: result.refId }, refId: result.refId });
       saveRecentSubmission({
         refId: result.refId,
         title: summary.slice(0, 80) || extraction.category,
@@ -123,7 +128,7 @@ export default function SubmitPage() {
       try {
         const result = await runExtraction(extractionInput);
         if (result.needsHuman) {
-          addBot(t(lang, "extractionFailed"));
+          addBot("", { key: "extractionFailed" });
           return;
         }
 
@@ -143,7 +148,7 @@ export default function SubmitPage() {
             rawText,
             originalInput: rawText ?? "",
           });
-          addBot(t(lang, "locationClarify"));
+          addBot("", { key: "locationClarify" });
           return;
         }
 
@@ -152,7 +157,7 @@ export default function SubmitPage() {
           setPendingVoice({ extraction, rawText });
           const summary =
             lang === "te" && extraction.summaryTe ? extraction.summaryTe : extraction.summaryEn;
-          addBot(t(lang, "readbackPrompt", { summary }), { kind: "readback", showReadbackChips: true });
+          addBot("", { key: "readbackPrompt", vars: { summary }, kind: "readback", showReadbackChips: true });
           return;
         }
 
@@ -215,7 +220,7 @@ export default function SubmitPage() {
         if (trimmed === "1") {
           const pv = pendingVoice;
           setPendingVoice(null);
-          addBot(t(lang, "readbackCorrect"));
+          addBot("", { key: "readbackCorrect" });
           setBusy(true);
           try {
             await finalizeSubmission(pv.extraction, pv.rawText);
@@ -226,7 +231,7 @@ export default function SubmitPage() {
         }
         if (trimmed === "2") {
           setPendingVoice(null);
-          addBot(t(lang, "readbackFix"));
+          addBot("", { key: "readbackFix" });
           return;
         }
       }
@@ -326,21 +331,23 @@ export default function SubmitPage() {
       </header>
 
       <div className="flex-1 space-y-2 overflow-y-auto bg-surface px-3 py-4">
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-          >
+        {messages.map((m) => {
+          const messageText = m.key ? t(lang, m.key, m.vars) : m.text;
+          return (
             <div
-              className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap shadow-sm ${
-                m.role === "user"
-                  ? "bg-primary/15 text-slate-900"
-                  : m.kind === "safety"
-                    ? "bg-amber-50 border border-amber-200 text-amber-900"
-                    : "bg-white text-slate-800 ring-1 ring-slate-100"
-              }`}
+              key={m.id}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
             >
-              {m.text}
+              <div
+                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap shadow-sm ${
+                  m.role === "user"
+                    ? "bg-primary/15 text-slate-900"
+                    : m.kind === "safety"
+                      ? "bg-amber-50 border border-amber-200 text-amber-900"
+                      : "bg-white text-slate-800 ring-1 ring-slate-100"
+                }`}
+              >
+                {messageText}
               {m.showReadbackChips && pendingVoice && (
                 <div className="flex gap-2 mt-2">
                   <button
@@ -383,7 +390,7 @@ export default function SubmitPage() {
               )}
             </div>
           </div>
-        ))}
+        )})}
         {busy && (
           <div className="flex justify-start">
             <div className="bg-white rounded-lg px-3 py-2 text-sm text-slate-500 shadow-sm">
