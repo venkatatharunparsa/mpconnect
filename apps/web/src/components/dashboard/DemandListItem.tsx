@@ -1,6 +1,6 @@
 "use client";
 
-import { ScoreBreakdown } from "./ScoreBreakdown";
+import { PERSONAL_CATEGORIES } from "@mpconnect/shared";
 import { StateBadge, UrgencyIndicator } from "./StateBadge";
 import { t } from "./labels";
 import type { Demand, UiLocale } from "./types";
@@ -13,6 +13,18 @@ interface DemandListItemProps {
   rank?: number;
 }
 
+function categoryEmoji(category: string) {
+  const c = category.toLowerCase();
+  if (c.includes("water")) return "💧";
+  if (c.includes("road") || c.includes("pothole")) return "🛣️";
+  if (c.includes("drain")) return "🚰";
+  if (c.includes("garbage")) return "🗑️";
+  if (c.includes("light")) return "💡";
+  if (c.includes("health")) return "🏥";
+  if (c.includes("education") || c.includes("school")) return "📚";
+  return "📷";
+}
+
 export function DemandListItem({
   demand,
   locale,
@@ -20,6 +32,8 @@ export function DemandListItem({
   onSelect,
   rank,
 }: DemandListItemProps) {
+  const isPublic = !PERSONAL_CATEGORIES.includes(demand.category);
+
   return (
     <button
       type="button"
@@ -34,29 +48,53 @@ export function DemandListItem({
         {rank != null && (
           <span className="text-lg font-extrabold text-slate-300">#{rank}</span>
         )}
+
+        <div className="shrink-0">
+          {demand.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={demand.photoUrl}
+              alt=""
+              className="h-16 w-16 rounded-md border border-slate-200 object-cover"
+            />
+          ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-lg">
+              {categoryEmoji(demand.category)}
+            </div>
+          )}
+        </div>
+
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-bold leading-snug text-slate-900">{demand.title}</h3>
+            <div className="min-w-0">
+              <h3 className="font-bold leading-snug text-slate-900">{demand.title}</h3>
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                <span
+                  className={`rounded-full px-2 py-0.5 font-bold ${
+                    isPublic
+                      ? "bg-primary/10 text-primary"
+                      : "bg-amber-50 text-amber-700"
+                  }`}
+                >
+                  {isPublic ? "Public" : "Personal"}
+                </span>
+                {demand.ward && (
+                  <span className="text-slate-600">
+                    {t("ward", locale)}: <span className="font-medium">{demand.ward}</span>
+                  </span>
+                )}
+              </div>
+            </div>
             <StateBadge state={demand.state} />
           </div>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
-            {demand.ward && (
-              <span>
-                {t("ward", locale)}: <span className="font-medium">{demand.ward}</span>
-              </span>
-            )}
+
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
             <UrgencyIndicator urgency={demand.urgency} />
           </div>
+
           <p className="mt-2 text-sm font-bold text-primary">
             {demand.affectedCount.toLocaleString()} {t("citizens", locale)}
           </p>
-          <div className="mt-3">
-            <ScoreBreakdown
-              score={demand.rankScore}
-              breakdown={demand.rankBreakdown}
-              locale={locale}
-            />
-          </div>
         </div>
       </div>
     </button>

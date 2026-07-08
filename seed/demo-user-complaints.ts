@@ -23,6 +23,20 @@ type DemoComplaint = {
   lang: "en" | "te" | "mixed";
 };
 
+function demoThumbDataUrl(label: string) {
+  // Inline SVG data URI so the demo always has thumbnails (no network dependency).
+  const safe = label.slice(0, 18).replace(/[^a-zA-Z0-9 _-]/g, "");
+  const bg = "#0f172a"; // slate-900
+  const fg = "#ffffff";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">
+    <rect width="100%" height="100%" rx="24" fill="${bg}"/>
+    <circle cx="96" cy="96" r="54" fill="#2563eb" opacity="0.9"/>
+    <text x="40%" y="52%" font-size="42" font-family="Arial, sans-serif" fill="${fg}" text-anchor="middle" dominant-baseline="middle">${safe.slice(0, 4)}</text>
+    <text x="50%" y="80%" font-size="16" font-family="Arial, sans-serif" fill="${fg}" opacity="0.85" text-anchor="middle">${safe.slice(0, 10)}</text>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 const COMPLAINTS: DemoComplaint[] = [
   {
     citizenKey: "DEMO-USER-001",
@@ -223,6 +237,7 @@ async function main() {
         channel: item.channel,
         citizenKey: item.citizenKey,
         rawText: item.rawText,
+        mediaUrl: demoThumbDataUrl(item.category),
         lang: item.lang,
         extraction: {
           kind: item.kind,

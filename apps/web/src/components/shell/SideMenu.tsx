@@ -21,24 +21,24 @@ type MenuLink = {
 function menuLinks(role: ReturnType<typeof useApp>["role"]): MenuLink[] {
   if (role === "mp") {
     return [
-      { href: "/mp", labelKey: "dashboard" },
-      { href: "/mp/issues", labelKey: "issues" },
+      { href: "/mp", labelKey: "issues" },
+      { href: "/mp/issues", labelKey: "dashboard" },
       { href: "/mp/map", labelKey: "map" },
       { href: "/mp/profile", labelKey: "profile" },
     ];
   }
   if (role === "official") {
     return [
-      { href: "/authority", labelKey: "dashboard" },
+      { href: "/authority", labelKey: "issues" },
       { href: "/authority/workspace", labelKey: "workspace" },
-      { href: "/authority/issues", labelKey: "issues" },
+      { href: "/authority/issues", labelKey: "dashboard" },
       { href: "/authority/map", labelKey: "map" },
       { href: "/authority/profile", labelKey: "profile" },
     ];
   }
   return [
-    { href: "/user", labelKey: "dashboard" },
-    { href: "/user/issues", labelKey: "issues" },
+    { href: "/user", labelKey: "issues" },
+    { href: "/user/issues", labelKey: "dashboard" },
     { href: "/user/register", labelKey: "register" },
     { href: "/user/map", labelKey: "map" },
     { href: "/user/profile", labelKey: "profile" },

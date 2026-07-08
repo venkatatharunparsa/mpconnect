@@ -23,24 +23,24 @@ type NavItem = {
 function navForRole(role: ReturnType<typeof useApp>["role"]): NavItem[] {
   if (role === "mp") {
     return [
-      { href: "/mp", labelKey: "dashboard", icon: IconStats },
-      { href: "/mp/issues", labelKey: "issues", icon: IconHome },
+      { href: "/mp", labelKey: "issues", icon: IconHome },
+      { href: "/mp/issues", labelKey: "dashboard", icon: IconStats },
       { href: "/mp/map", labelKey: "map", icon: IconMap },
       { href: "/mp/profile", labelKey: "profile", icon: IconUser },
     ];
   }
   if (role === "official") {
     return [
-      { href: "/authority", labelKey: "dashboard", icon: IconStats },
+      { href: "/authority", labelKey: "issues", icon: IconHome },
       { href: "/authority/workspace", labelKey: "workspace", icon: IconHome },
-      { href: "/authority/issues", labelKey: "issues", icon: IconMic },
+      { href: "/authority/issues", labelKey: "dashboard", icon: IconMic },
       { href: "/authority/map", labelKey: "map", icon: IconMap },
       { href: "/authority/profile", labelKey: "profile", icon: IconUser },
     ];
   }
   return [
-    { href: "/user", labelKey: "dashboard", icon: IconStats },
-    { href: "/user/issues", labelKey: "issues", icon: IconHome },
+    { href: "/user", labelKey: "issues", icon: IconHome },
+    { href: "/user/issues", labelKey: "dashboard", icon: IconStats },
     { href: "/user/register", labelKey: "register", icon: IconMic, fab: true },
     { href: "/user/map", labelKey: "map", icon: IconMap },
     { href: "/user/profile", labelKey: "profile", icon: IconUser },

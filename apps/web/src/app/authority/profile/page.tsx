@@ -1,18 +1,10 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useApp } from "@/components/shell/AppProvider";
+import { RoleGate } from "@/components/role/RoleGate";
+import { ProfileView } from "@/components/profile/ProfileView";
 
 export default function AuthorityProfile() {
-  const router = useRouter();
-  const { setRole } = useApp();
-
-  useEffect(() => {
-    setRole("official");
-    router.replace("/vision");
-  }, [router, setRole]);
-
-  return null;
+  return (
+    <RoleGate role="official">
+      <ProfileView role="official" />
+    </RoleGate>
+  );
 }
-

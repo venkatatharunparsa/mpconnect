@@ -17,16 +17,21 @@ function dashboardHref(role: ReturnType<typeof useApp>["role"]) {
 
 function titleForPath(pathname: string, locale: ReturnType<typeof useApp>["locale"]) {
   if (pathname === "/") return null;
+  if (pathname.includes("/profile")) return shellT("profile", locale);
+  if (pathname.includes("/vision")) return shellT("visionShort", locale);
+  if (pathname.includes("/feed")) return shellT("liveFeed", locale);
   if (pathname.startsWith("/submit")) return shellT("register", locale);
-  if (pathname.startsWith("/user")) return pathname.includes("/register") ? shellT("register", locale) : shellT("dashboard", locale);
-  if (pathname.startsWith("/authority")) return pathname.includes("/workspace") ? shellT("workspace", locale) : shellT("dashboard", locale);
-  if (pathname.startsWith("/mp")) return pathname.includes("/issues") ? shellT("issues", locale) : shellT("dashboard", locale);
+  if (pathname.includes("/user/issues")) return shellT("dashboard", locale);
+  if (pathname.startsWith("/user")) return pathname.includes("/register") ? shellT("register", locale) : shellT("issues", locale);
+  if (pathname.includes("/authority/issues")) return shellT("dashboard", locale);
+  if (pathname.startsWith("/authority")) return pathname.includes("/workspace") ? shellT("workspace", locale) : shellT("issues", locale);
+  if (pathname.includes("/mp/issues")) return shellT("dashboard", locale);
+  if (pathname.startsWith("/mp")) return pathname.includes("/issues") ? shellT("dashboard", locale) : shellT("issues", locale);
   if (pathname.startsWith("/dashboard")) return shellT("dashboard", locale);
   if (pathname.startsWith("/map")) return shellT("map", locale);
   if (pathname.startsWith("/p/")) return shellT("issues", locale);
   if (pathname.startsWith("/review")) return shellT("menuReview", locale);
   if (pathname.startsWith("/voice")) return shellT("menuVoice", locale);
-  if (pathname.startsWith("/vision")) return shellT("profile", locale);
   return "MPconnect";
 }
 

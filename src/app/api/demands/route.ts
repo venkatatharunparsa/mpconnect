@@ -20,6 +20,7 @@ export async function GET() {
         urgency: d.urgency,
         state: d.state,
         visibility: d.visibility,
+        photoUrl: d.photoUrl,
         rankScore: d.rankScore,
         rankBreakdown: d.rankBreakdown,
         falseClosureCount: d.falseClosureCount,
