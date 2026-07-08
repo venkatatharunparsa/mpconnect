@@ -1,7 +1,6 @@
 packages:
-  - '.'
-  - 'apps/web'
-  - 'packages/shared'
+  - 'apps/*'
+  - 'packages/*'
 
 allowBuilds:
   '@google/genai': true

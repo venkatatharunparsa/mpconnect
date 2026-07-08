@@ -18,12 +18,12 @@ const bodySchema = z
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { refId: string } },
 ) {
   return withTracing(req, async () => {
     try {
       const body = bodySchema.parse(await parseJsonBody(req));
-      const [sub] = await db.select().from(submissions).where(eq(submissions.id, params.id)).limit(1);
+      const [sub] = await db.select().from(submissions).where(eq(submissions.id, params.refId)).limit(1);
       if (!sub) return jsonError("Submission not found", 404);
 
       // Perform Gemini extraction over the human-corrected text
@@ -49,11 +49,11 @@ export async function POST(
           asrConfidence: 1.0, // Corrected
           status: "extracted",
         })
-        .where(eq(submissions.id, params.id));
+        .where(eq(submissions.id, params.refId));
 
       await appendEvent({
         eventType: "SubmissionTranscribed",
-        submissionId: params.id,
+        submissionId: params.refId,
         actorType: "human",
         actorId: body.actorId,
         payload: {
@@ -64,7 +64,7 @@ export async function POST(
 
       await appendEvent({
         eventType: "ExtractionRecorded",
-        submissionId: params.id,
+        submissionId: params.refId,
         actorType: "model",
         actorId: "gemini",
         payload: {
@@ -76,10 +76,10 @@ export async function POST(
 
       // Run merge engine mapping matching trigger
       const traceId = getTraceId();
-      await triggerMergeProcessing(params.id, traceId);
+      await triggerMergeProcessing(params.refId, traceId);
 
       return jsonOk({
-        submissionId: params.id,
+        submissionId: params.refId,
         status: "extracted",
         refId: sub.refId,
       });
