@@ -1,11 +1,8 @@
 import Link from "next/link";
 
 export default function ApiHomePage() {
-  const webUrl = (
-    process.env.NEXT_PUBLIC_WEB_URL ?? 
-    process.env.CORS_ORIGINS?.split(",")[0]?.trim() ?? 
-    "http://localhost:3001"
-  ).replace(/\/$/, "");
+  const corsOrigin = process.env.CORS_ORIGINS?.split(",")[0]?.trim();
+  const webUrl = corsOrigin || process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3001";
 
   return (
     <div className="py-16 text-center">
